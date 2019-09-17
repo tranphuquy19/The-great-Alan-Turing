@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<!-- saved from url=(0084)http://192.168.1.5/mod/resource/cryptolab/Vigen%C3%A8re%20cipher%20(JavaScript).html -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>Vigenère cipher (JavaScript)</title>
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Script-Type" content="application/javascript">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="Stylesheet" href="./common.css" type="text/css" media="all">
+	<link rel="Stylesheet" href="./screen.css" type="text/css" media="screen">
+	<link rel="Stylesheet" href="./print.css" type="text/css" media="print">
+	<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://www.nayuki.io/rss20.xml">
+</head>
+
+<body background="./background.gif" text="#000000" link="#22806A" vlink="#FF1CAC" alink="#666666">
+<article>
+<h1> Vigenère cipher</h1>
+
+<noscript>
+</noscript>
+<script async="" src="./analytics.js"></script><script type="application/javascript" src="./vigenere-cipher.js"></script>
+<form action="http://192.168.1.5/mod/resource/cryptolab/Vigen%C3%A8re%20cipher%20(JavaScript).html#" method="get" onsubmit="return false">
+	<table class="noborder">
+		<tbody>
+			<tr>
+				<td><label for="text">Text:</label></td>
+				<td><textarea id="text" cols="50" rows="10" style="width:40em; height:15em">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.</textarea></td>
+			</tr>
+			<tr>
+				<td><label for="key">Key:</label></td>
+				<td><input type="text" value="abc" id="key" style="width:10em;"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="button" value="Encrypt" onclick="doCrypt(false)">
+					<input type="button" value="Decrypt" onclick="doCrypt(true)">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+
+<h2>Description</h2>
+<p>This JavaScript program encrypts and decrypts messages using the Vigenère cipher. The key must have at least one letter. The key is case-insensitive and non-letters are ignored. When encrypting or decrypting, the case is preserved, and non-letters are unchanged. The Caesar cipher is a special case of the Vigenère cipher with a one-letter key.</p>
+
+<p>The Vigenere Cipher uses the following tableau (the 'tabula recta') to encipher the plaintext:</p>
+
+<pre>    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    ---------------------------------------------------
+A   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+B   B C D E F G H I J K L M N O P Q R S T U V W X Y Z A
+C   C D E F G H I J K L M N O P Q R S T U V W X Y Z A B
+D   D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
+E   E F G H I J K L M N O P Q R S T U V W X Y Z A B C D
+F   F G H I J K L M N O P Q R S T U V W X Y Z A B C D E
+G   G H I J K L M N O P Q R S T U V W X Y Z A B C D E F
+H   H I J K L M N O P Q R S T U V W X Y Z A B C D E F G
+I   I J K L M N O P Q R S T U V W X Y Z A B C D E F G H
+J   J K L M N O P Q R S T U V W X Y Z A B C D E F G H I
+K   K L M N O P Q R S T U V W X Y Z A B C D E F G H I J
+L   L M N O P Q R S T U V W X Y Z A B C D E F G H I J K
+M   M N O P Q R S T U V W X Y Z A B C D E F G H I J K L
+N   N O P Q R S T U V W X Y Z A B C D E F G H I J K L M
+O   O P Q R S T U V W X Y Z A B C D E F G H I J K L M N
+P   P Q R S T U V W X Y Z A B C D E F G H I J K L M N O
+Q   Q R S T U V W X Y Z A B C D E F G H I J K L M N O P
+R   R S T U V W X Y Z A B C D E F G H I J K L M N O P Q
+S   S T U V W X Y Z A B C D E F G H I J K L M N O P Q R
+T   T U V W X Y Z A B C D E F G H I J K L M N O P Q R S
+U   U V W X Y Z A B C D E F G H I J K L M N O P Q R S T
+V   V W X Y Z A B C D E F G H I J K L M N O P Q R S T U
+W   W X Y Z A B C D E F G H I J K L M N O P Q R S T U V
+X   X Y Z A B C D E F G H I J K L M N O P Q R S T U V W
+Y   Y Z A B C D E F G H I J K L M N O P Q R S T U V W X
+Z   Z A B C D E F G H I J K L M N O P Q R S T U V W X Y
+</pre> 
+
+<p>To encipher a message, repeat the keyword above the plaintext:</p>
+<script type="application/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create','UA-23532931-1','auto'); ga('send','pageview');
+</script>
+
+
+
+<center>
+<h1> The Vigenère Cipher: Complete Examples </h1>
+<img src="./GrLine.gif">
+</center>
+<p>
+<font size="4">
+
+This page discusses a few complete examples.
+Each example uses Kasiski's method and the index of coincidence method to determine 
+	a possible keyword length,
+	with which a possible keyword is constructed and used to decrypt the ciphertext.
+This procedure repeats until a meaningful plaintext is found.
+Keyword length search is limited to the range of 2 and 20 in this section.
+With a computer program, we can search for any length and
+	this restriction is purely artificial.
+</font></p><p><font size="4">
+
+
+<!-- --------------------- -->
+</font><font size="4"><a id="Complete-Example-1"><font color="#FF0000">Example 1</font></a></font></p>
+<font size="4">
+
+
+The following is a ciphertext to be analyzed.
+<p></p><blockquote>
+<font face="Courier New"><b>
+DAZFI SFSPA VQLSN PXYSZ WXALC DAFGQ UISMT PHZGA MKTTF TCCFX<br>
+KFCRG GLPFE TZMMM ZOZDE ADWVZ WMWKV GQSOH QSVHP WFKLS LEASE<br>
+PWHMJ EGKPU RVSXJ XVBWV POSDE TEQTX OBZIK WCXLW NUOVJ MJCLL<br>
+OEOFA ZENVM JILOW ZEKAZ EJAQD ILSWW ESGUG KTZGQ ZVRMN WTQSE<br>
+OTKTK PBSTA MQVER MJEGL JQRTL GFJYG SPTZP GTACM OECBX SESCI<br>
+YGUFP KVILL TWDKS ZODFW FWEAA PQTFS TQIRG MPMEL RYELH QSVWB<br>
+AWMOS DELHM UZGPG YEKZU KWTAM ZJMLS EVJQT GLAWV OVVXH KWQIL<br>
+IEUYS ZWXAH HUSZO GMUZQ CIMVZ UVWIF JJHPW VXFSE TZEDF<br>
+</b></font>
+</blockquote>
+<p>
+
+The first task is estimating the keyword length.
+Kasiski's method found the following repeated strings and their positions.</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr bgcolor="#FFFF00">
+	<td> <b>Length</b> </td>
+	<td> <b>String</b> </td>
+	<td colspan="2"> <b>Positions</b> </td>
+    <td> <b>Distance</b> </td>
+</tr>
+<tr align="CENTER">
+	<td> 6 </td>
+	<td align="LEFT"> <font face="Courier New"><b>YSZWXA</b></font> </td>
+	<td> 17 </td>
+	<td> 353 </td>
+	<td> 336 </td>
+</tr>
+<tr align="CENTER">
+	<td rowspan="3"> 4 </td>
+	<td align="LEFT"> <font face="Courier New"><b>HQSV</b></font> </td>
+	<td> 84 </td>
+	<td> 294 </td>
+	<td> 210 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>MJEG</b></font> </td>
+	<td> 103 </td>
+	<td> 215 </td>
+	<td> 112 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>OSDE</b></font> </td>
+	<td> 121 </td>
+	<td> 303 </td>
+	<td> 102 </td>
+</tr>
+<tr align="CENTER">
+	<td rowspan="7"> 3 </td>
+	<td align="LEFT"> <font face="Courier New"><b>ETZ</b></font> </td>
+	<td> 59 </td>
+	<td> 389 </td>
+	<td> 330 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>HPW</b></font> </td>
+	<td> 88 </td>
+	<td> 382 </td>
+	<td> 294 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>AZE</b></font> </td>
+	<td> 154 </td>
+	<td> 168 </td>
+	<td> 14 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>TAM</b></font> </td>
+	<td> 208 </td>
+	<td> 322 </td>
+	<td> 114 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>SZO</b></font> </td>
+	<td> 264 </td>
+	<td> 362 </td>
+	<td> 98 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>ELM</b></font> </td>
+	<td> 292 </td>
+	<td> 306 </td>
+	<td> 14 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>MUZ</b></font> </td>
+	<td>  309 </td>
+	<td>  366 </td>
+	<td> 57 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+
+The following table shows the distances and their factors.
+The most common factors are 2, 3, 7 and 14.
+Since the factor 2 is unlikely,
+	we have three estimates 3, 7 and 14.
+Of these three possible keyword lengths, 14 is the most likely because it has the highest count.</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td> <br> </td>
+	<td bgcolor="#FFFF00" colspan="19"> <b>Factors</b> </td>
+</tr>
+<tr>
+	<td align="CENTER"> <b>Distance</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 3 </td>
+	<td align="CENTER"> 4 </td>
+	<td align="CENTER"> 5 </td>
+	<td align="CENTER"> 6 </td>
+	<td align="CENTER"> 7 </td>
+	<td align="CENTER"> 8 </td>
+	<td align="CENTER"> 9 </td>
+	<td align="CENTER"> 10 </td>
+	<td align="CENTER"> 11 </td>
+	<td align="CENTER"> 12 </td>
+	<td align="CENTER"> 13 </td>
+	<td align="CENTER"> 14 </td>
+	<td align="CENTER"> 15 </td>
+	<td align="CENTER"> 16 </td>
+	<td align="CENTER"> 17 </td>
+	<td align="CENTER"> 18 </td>
+	<td align="CENTER"> 19 </td>
+	<td align="CENTER"> 20 </td>
+</tr>
+<tr>
+	<td align="CENTER"> 336 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 330 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 294 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 210 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 182 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 114 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 112 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 98 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 57 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 14 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> <b>Total</b> </td>
+	<td align="CENTER" bgcolor="#DDDDFF"> <b>9</b> </td>
+	<td align="CENTER" bgcolor="#DDDDFF"> <b>6</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 5 </td>
+	<td align="CENTER" bgcolor="#DDDDFF"> <b>6</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 0 </td> 
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 1 </td>
+	<td align="CENTER"> 1 </td>
+	<td align="CENTER"> 1 </td>
+	<td align="CENTER" bgcolor="#DDDDFF"> <b>7</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 0 </td>
+	<td align="CENTER"> 0 </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 0 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+
+The following table has the average of index of coincidence values
+	of each length (<i>i.e.</i>, number of cosets).
+The highest one is 14 with an average of 0.064378.
+Hence, we have strong evidence showing that the keyword length is 14.</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 1 </td>
+	<td> 2 </td>
+	<td> 3 </td>
+	<td> 4 </td>
+	<td> 5 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.042614 </td>
+	<td> 0.044759 </td>
+	<td> 0.042969 </td>
+	<td> 0.042926 </td>
+	<td> 0.041610 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 6 </td>
+	<td> 7 </td>
+	<td> 8 </td>
+	<td> 9 </td>
+	<td> 10 </td>
+</tr><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.044117 </td>
+	<td> 0.050827 </td>
+	<td> 0.043529 </td>
+	<td> 0.041019 </td>
+	<td> 0.044318 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 11 </td>
+	<td> 12 </td>
+	<td> 13 </td>
+	<td> 14 </td>
+	<td> 15 </td>
+</tr><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.042662 </td>
+	<td> 0.041208 </td>
+	<td> 0.040273 </td>
+	<td bgcolor="#DDDDFF"> <b>0.064378</b> </td>
+	<td> 0.040722 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 16 </td>
+	<td> 17 </td>
+	<td> 18 </td>
+	<td> 19 </td>
+	<td> 20 </td>
+</tr><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.042582 </td>
+	<td> 0.047256 </td>
+	<td> 0.041294 </td>
+	<td> 0.042000 </td>
+	<td> 0.043187 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+
+
+The table below has the smallest χ<sup>2</sup> value of each coset
+	and the corresponding letter:</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td> <font face="Courier New"><b>A</b></font> </td>
+	<td> 0.556354 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>M</b></font> </td>
+	<td> 0.435045 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>B</b></font> </td>
+	<td> 0.738187 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>R</b></font> </td>
+	<td> 0.589010 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>O</b></font> </td>
+	<td> 1.061695 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>I</b></font> </td>
+	<td> 0.824027 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>S</b></font> </td>
+	<td> 1.322445 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>E</b></font> </td>
+	<td> 0.372434 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>T</b></font> </td>
+	<td> 1.188328 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>H</b></font> </td>
+	<td> 0.981700 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>O</b></font> </td>
+	<td> 1.096823 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>M</b></font> </td>
+	<td> 2.236836 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>A</b></font> </td>
+	<td> 0.726619 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>S</b></font> </td>
+	<td> 0.625189 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+
+Thus, the recovered keyword is <font face="Courier New"><b>AMBROISETHOMAS</b></font>.
+The following is the decrypted text with spaces and punctuation added.
+We are lucky to decrypt it in one shot.</p><blockquote>
+<font face="Courier New"><b>
+DO YOU KNOW THE LAND WHERE THE ORANGE TREE BLOSSOMS?<br>
+THE COUNTRY OF GOLDEN FRUITS AND MARVELOUS ROSES,<br>
+WHERE THE BREEZE IS SOFTER AND BIRDS LIGHTER,<br>
+WHERE BEES GATHER POLLEN IN EVERY SEASON,<br>
+AND WHERE SHINES AND SMILES, LIKE A GIFT FROM GOD,<br>
+AN ETERNAL SPRINGTIME UNDER AN EVER-BLUE SKY!<br>
+ALAS! BUT I CANNOT FOLLOW YOU<br>
+TO THAT HAPPY SHORE FROM WHICH FATE HAS EXILED ME!<br>
+THERE! IT IS THERE THAT I SHOULD LIKE TO LIVE,<br>
+TO LOVE, TO LOVE, AND TO DIE!<br>
+IT IS THERE THAT I SHOULD LIKE TO LIVE, IT IS THERE, YES, THERE!<br>
+</b></font>
+</blockquote>
+<p>
+This is part one of "Connais-tu le pays" of Ambroise Thomas' opera <b><i>Mignon</i></b>.
+In the first act, Mignon speaks to Wilhelm and Lothano who rescue her,
+	tells her abduction, and describes her past time with this beautiful and well-known aria.
+The above is an English translation from French.
+"Connais-tu le pays" means "Do you know this country (or land)".
+♦</p><p>
+
+
+<!-- --------------------- -->
+<a id="Complete-Example-2"><font color="#FF0000">Example </font></a></p>
+The following is the ciphertext to be analyzed.
+<blockquote>
+<font face="Courier New"><b>
+QRBAI UWYOK ILBRZ XTUWL EGXSN VDXWR XMHXY FCGMW WWSME LSXUZ<br>
+MKMFS BNZIF YEIEG RFZRX WKUFA XQEDX DTTHY NTBRJ LHTAI KOCZX<br>
+QHBND ZIGZG PXARJ EDYSJ NUMKI FLBTN HWISW NVLFM EGXAI AAWSL<br>
+FMHXR SGRIG HEQTU MLGLV BRSIL AEZSG XCMHT OWHFM LWMRK HPRFB<br>
+ELWGF RUGPB HNBEM KBNVW HHUEA KILBN BMLHK XUGML YQKHP RFBEL<br>
+EJYNV WSIJB GAXGO TPMXR TXFKI WUALB RGWIE GHWHG AMEWW LTAEL<br>
+NUMRE UWTBL SDPRL YVRET LEEDF ROBEQ UXTHX ZYOZB XLKAC KSOHN<br>
+VWXKS MAEPH IYQMM FSECH RFYPB BSQTX TPIWH GPXQD FWTAI KNNBX<br>
+SIYKE TXTLV BTMQA LAGHG OTPMX RTXTH XSFYG WMVKH LOIVU ALMLD<br>
+LTSYV WYNVW MQVXP XRVYA BLXDL XSMLW SUIOI IMELI SOYEB HPHNR<br>
+WTVUI AKEYG WIETG WWBVM VDUMA EPAUA KXWHK MAUPA MUKHQ PWKCX<br>
+EFXGW WSDDE OMLWL NKMWD FWTAM FAFEA MFZBN WIHYA LXRWK MAMIK<br>
+GNGHJ UAZHM HGUAL YSULA ELYHJ BZMSI LAILH WWYIK EWAHN PMLBN<br>
+NBVPJ XLBEF WRWGX KWIRH XWWGQ HRRXW IOMFY CZHZL VXNVI OYZCM<br>
+YDDEY IPWXT MMSHS VHHXZ YEWNV OAOEL SMLSW KXXFX STRVI HZLEF<br>
+JXDAS FIE
+</b></font></blockquote>
+<p>
+
+Kasiski's method found many repeating strings as shown in 
+	the table below.</p>
+<center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td bgcolor="#FFFF00"> <b>Length</b> </td>
+	<td bgcolor="#FFFF00"> <b>String</b> </td>
+	<td bgcolor="#FFFF00" colspan="2"> <b>Positions</b> </td>
+	<td bgcolor="#FFFF00"> <b>Distance</b> </td>
+	<td bgcolor="#FFFFAA"> <b>Length</b> </td>
+	<td bgcolor="#FFFFAA"> <b>String</b> </td>
+	<td bgcolor="#FFFFAA" colspan="2"> <b>Positions</b> </td>
+	<td bgcolor="#FFFFAA"> <b>Distance</b> </td>
+</tr>
+<tr align="CENTER">
+	<td> 9 </td>
+	<td align="LEFT"> <font face="Courier New"><b>GOTPMXRTX</b></font> </td>
+	<td> 263 </td>
+	<td> 419 </td>
+	<td> 156 </td>
+	<td rowspan="23" align="TOP"> 3 </td>
+	<td align="LEFT"> <font face="Courier New"><b>LFM</b></font> </td>
+	<td> 137 </td>
+	<td> 149 </td>
+	<td> 12 </td>
+</tr>
+<tr align="CENTER">
+	<td> 8 </td>
+	<td align="LEFT"> <font face="Courier New"><b>KHPRFBEL</b></font> </td>
+	<td> 194 </td>
+	<td> 242 </td>
+	<td> 48 </td>
+	<td align="LEFT"> <font face="Courier New"><b>LVB</b></font> </td>
+	<td> 168 </td>
+	<td> 408 </td>
+	<td> 240 </td>
+</tr>
+<tr align="CENTER">
+	<td> 5 </td>
+	<td align="LEFT"> <font face="Courier New"><b>DFWTA</b></font> </td>
+	<td> 389 </td>
+	<td> 569 </td>
+	<td> 180 </td>
+	<td align="LEFT"> <font face="Courier New"><b>LAE</b></font> </td>
+	<td> 174 </td>
+	<td> 618 </td>
+	<td> 444 </td>
+</tr>
+<tr align="CENTER">
+	<td rowspan="8"> 4 </td>
+	<td align="LEFT"> <font face="Courier New"><b>KILB</b></font> </td>
+	<td> 9 </td>
+	<td> 225 </td>
+	<td> 216 </td>
+	<td align="LEFT" rowspan="2"> <font face="Courier New"><b>MLW</b></font> </td>
+	<td> 189 </td>
+	<td> 477 </td>
+	<td> 288 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>TAIK</b></font> </td>
+	<td> 92 </td>
+	<td> 392 </td>
+	<td> 300 </td>
+	<td> 477 </td>
+	<td> 561 </td>
+	<td> 84 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>SILA</b></font> </td>
+	<td> 172 </td>
+	<td> 628 </td>
+	<td> 456 </td>
+	<td align="LEFT" rowspan="3"> <font face="Courier New"><b>NVW</b></font> </td>
+	<td> 217 </td>
+	<td> 253 </td>
+	<td> 36 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>YNVW</b></font> </td>
+	<td> 252 </td>
+	<td> 456 </td>
+	<td> 204 </td>
+	<td> 253 </td>
+	<td> 349 </td>
+	<td> 96 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>GWIE</b></font> </td>
+	<td> 281 </td>
+	<td> 509 </td>
+	<td> 228 </td>
+	<td> 349 </td>
+	<td> 457 </td>
+	<td> 108 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>XTHX</b></font> </td>
+	<td> 331 </td>
+	<td> 427 </td>
+	<td> 96 </td>
+	<td align="LEFT"> <font face="Courier New"><b>LBN</b></font> </td>
+	<td>  227 </td>
+	<td> 647 </td>
+	<td> 420 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>HXZY</b></font> </td>
+	<td> 333 </td>
+	<td> 717 </td>
+	<td> 384 </td>
+	<td align="LEFT" rowspan="2"> <font face="Courier New"><b>UAL</b></font> </td>
+	<td> 276 </td>
+	<td> 444 </td>
+	<td> 168 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>MAEP</b></font> </td>
+	<td> 355 </td>
+	<td> 523 </td>
+	<td> 168 </td>
+	<td> 444 </td>
+	<td> 612 </td>
+	<td> 168 </td>
+</tr>
+<tr align="CENTER">
+	<td rowspan="12"> 3 </td>
+	<td align="LEFT"> <font face="Courier New"><b>LBR</b></font> </td>
+	<td> 11 </td>
+	<td> 278 </td>
+	<td> 267 </td>
+	<td align="LEFT"> <font face="Courier New"><b>WHG</b></font> </td>
+	<td> 287 </td>
+	<td> 383 </td>
+	<td> 96 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>EGX</b></font> </td>
+	<td> 20 </td>
+	<td> 140 </td>
+	<td> 120 </td>
+	<td align="LEFT"> <font face="Courier New"><b>AEL</b></font> </td>
+	<td> 297 </td>
+	<td> 619 </td>
+	<td> 322 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>MHX</b></font> </td>
+	<td> 31 </td>
+	<td> 151 </td>
+	<td> 120 </td>
+	<td align="LEFT" rowspan="2"> <font face="Courier New"><b>TXT</b></font> </td>
+	<td> 378 </td>
+	<td> 405 </td>
+	<td> 27 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>WWS</b></font> </td>
+	<td> 40 </td>
+	<td> 554 </td>
+	<td> 514 </td>
+	<td> 405 </td>
+	<td> 426 </td>
+	<td> 21 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>MEL</b></font> </td>
+	<td> 43 </td>
+	<td> 486 </td>
+	<td> 443 </td>
+	<td align="LEFT"> <font face="Courier New"><b>NNB</b></font> </td>
+	<td> 396 </td>
+	<td> 649 </td>
+	<td> 253 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>ELS</b></font> </td>
+	<td> 44 </td>
+	<td> 728 </td>
+	<td> 684 </td>
+	<td align="LEFT"> <font face="Courier New"><b>YGW</b></font> </td>
+	<td> 433 </td>
+	<td> 508 </td>
+	<td> 75 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>MFS</b></font> </td>
+	<td> 52 </td>
+	<td> 364 </td>
+	<td> 312 </td>
+	<td align="LEFT"> <font face="Courier New"><b>SML</b></font> </td>
+	<td> 476 </td>
+	<td> 730 </td>
+	<td> 254 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>IEG</b></font> </td>
+	<td> 62 </td>
+	<td> 283 </td>
+	<td> 221 </td>
+	<td align="LEFT"> <font face="Courier New"><b>GWW</b></font> </td>
+	<td> 514 </td>
+	<td> 553 </td>
+	<td> 39 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>RXW</b></font> </td>
+	<td> 68 </td>
+	<td> 677 </td>
+	<td> 609 </td>
+	<td align="LEFT"> <font face="Courier New"><b>KMA</b></font> </td>
+	<td> 534 </td>
+	<td> 594 </td>
+	<td> 60 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>GPX</b></font> </td>
+	<td> 109 </td>
+	<td> 385 </td>
+	<td> 276 </td>
+	<td align="LEFT"> <font face="Courier New"><b>DDE</b></font> </td>
+	<td> 557 </td>
+	<td> 701 </td>
+	<td> 144 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>NUM</b></font> </td>
+	<td> 120 </td>
+	<td> 300 </td>
+	<td> 180 </td>
+	<td align="LEFT"> <font face="Courier New"><b>AMF</b></font> </td>
+	<td> 573 </td>
+	<td> 579 </td>
+	<td> 6 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <font face="Courier New"><b>WNV</b></font> </td>
+	<td> 134 </td>
+	<td> 722 </td>
+	<td> 588 </td>
+	<td align="LEFT"> <font face="Courier New"><b>HZL</b></font> </td>
+	<td> 687 </td>
+	<td> 745 </td>
+	<td> 58 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+Since there are potentially many repeating strings of length 3 (<i>i.e.</i>, tri-graph),
+	they usually can help determine the keyword length.
+The table below shows the distances and their factors of repeating strings of length 3.
+The most common factors are 2, 3, 4, 6 and 12
+	with occurrences 23, 25, 18, 20 and 18, respectively.
+In this case, even though the factor 2 is ignored,
+	it is not so obvious about the correct length of the keyword.
+This is a common problem with Kasiski's method.</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td> <br> </td>
+	<td bgcolor="#FFFF00" colspan="19"> <b>Factors</b> </td>
+</tr>
+<tr>
+	<td align="CENTER"> <b>Distance</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 3 </td>
+	<td align="CENTER"> 4 </td>
+	<td align="CENTER"> 5 </td>
+	<td align="CENTER"> 6 </td>
+	<td align="CENTER"> 7 </td>
+	<td align="CENTER"> 8 </td>
+	<td align="CENTER"> 9 </td>
+	<td align="CENTER"> 10 </td>
+	<td align="CENTER"> 11 </td>
+	<td align="CENTER"> 12 </td>
+	<td align="CENTER"> 13 </td>
+	<td align="CENTER"> 14 </td>
+	<td align="CENTER"> 15 </td>
+	<td align="CENTER"> 16 </td>
+	<td align="CENTER"> 17 </td>
+	<td align="CENTER"> 18 </td>
+	<td align="CENTER"> 19 </td>
+	<td align="CENTER"> 20 </td>
+</tr>
+<tr>
+	<td align="CENTER"> 684 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 609 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 588 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 514 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 444 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 443 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 420 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+</tr>
+<tr>
+	<td align="CENTER"> 322 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 312 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 288 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 276 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 267 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 254 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 253 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 240 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+</tr>
+<tr>
+	<td align="CENTER"> 221 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 180 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+</tr>
+<tr>
+	<td align="CENTER"> 168 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 144 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 120 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+</tr>
+<tr>
+	<td align="CENTER"> 108 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 96 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 84 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 75 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 60 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+</tr>
+<tr>
+	<td align="CENTER"> 58 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 39 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 36 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 27 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 21 </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 12 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr>
+	<td align="CENTER"> 6 </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> X </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+	<td align="CENTER"> <br> </td>
+</tr>
+<tr align="CENTER">
+	<td> <b>Total</b> </td>
+	<td bgcolor="#DDDDFF"> <b>23</b> </td>
+	<td bgcolor="#DDDDFF"> <b>25</b> </td>
+	<td bgcolor="#DDDDFF"> <b>18</b> </td>
+	<td> 7 </td>
+	<td bgcolor="#DDDDFF"> <b>20</b> </td>
+	<td> 5 </td>
+	<td> 7 </td>
+	<td> 7 </td>
+	<td> 5 </td>
+	<td> 1 </td>
+	<td bgcolor="#DDDDFF"> <b>18</b> </td>
+	<td> 3 </td>
+	<td> 5 </td>
+	<td> 6 </td>
+	<td> 4 </td>
+	<td> 1 </td>
+	<td> 6 </td>
+	<td> 1 </td>
+	<td> 5 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+
+The following table has the average of index of coincidence values
+	of each length (<i>i.e.</i>, number of cosets).
+The highest one is 12 with an average of 0.067244.
+Hence, we have strong evidence showing that the keyword length is 12.
+Note that the length 12 is not the highest count using Kasiski's method.</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 1 </td>
+	<td> 2 </td>
+	<td> 3 </td>
+	<td> 4 </td>
+	<td> 5 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.043760 </td>
+	<td> 0.044658 </td>
+	<td> 0.049472 </td>
+	<td> 0.050311 </td>
+	<td> 0.043309 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 6 </td>
+	<td> 7 </td>
+	<td> 8 </td>
+	<td> 9 </td>
+	<td> 10 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.058913 </td>
+	<td> 0.043981 </td>
+	<td> 0.049996 </td>
+	<td> 0.048465 </td>
+	<td> 0.045402 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 11 </td>
+	<td> 12 </td>
+	<td> 13 </td>
+	<td> 14 </td>
+	<td> 15 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.042631 </td>
+	<td bgcolor="#DDDDFF"> <b>0.071725</b> </td>
+	<td> 0.044905 </td>
+	<td> 0.045486 </td>
+	<td> 0.049118 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 16 </td>
+	<td> 17 </td>
+	<td> 18 </td>
+	<td> 19 </td>
+	<td> 20 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.050852 </td>
+	<td> 0.043347 </td>
+	<td> 0.057025 </td>
+	<td> 0.040518 </td>
+	<td> 0.048491 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+
+
+The following table has the smallest χ<sup>2</sup> value of each coset
+	and the corresponding letter:</p>
+<center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td> <font face="Courier New"><b>U</b></font> </td>
+	<td> 0.231760 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>N</b></font> </td>
+	<td> 0.317295 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>I</b></font> </td>
+	<td> 0.340955 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>T</b></font> </td>
+	<td> 0.529938 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>E</b></font> </td>
+	<td> 0.302274 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>D</b></font> </td>
+	<td> 0.395590 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>S</b></font> </td>
+	<td> 0.455630 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>T</b></font> </td>
+	<td> 0.393412 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>A</b></font> </td>
+	<td> 0.219040 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>T</b></font> </td>
+	<td> 0.354012 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>E</b></font> </td>
+	<td> 0.321425 </td>
+</tr>
+<tr align="CENTER">
+	<td> <font face="Courier New"><b>S</b></font> </td>
+	<td> 0.404944 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+Thus, the recovered keyword is <font face="Courier New"><b>UNITEDSTATES</b></font>.
+The following is the decrypted plaintext with spaces and punctuation added.</p><p>
+</p><blockquote>
+<font face="Courier New"><b>
+WE, THEREFORE, THE REPRESENTATIVES OF THE UNITED STATES OF AMERICA,<br>
+IN GENERAL CONGRESS, ASSEMBLED, APPEALING TO THE SUPREME JUDGE OF<br>
+THE WORLD FOR THE RECTITUDE OF OUR INTENTIONS, DO, IN THE NAME,<br>
+AND BY AUTHORITY OF THE GOOD PEOPLE OF THESE COLONIES, SOLEMNLY PUBLISH<br>
+AND DECLARE, THAT THESE UNITED COLONIES ARE, AND OF RIGHT OUGHT TO BE<br>
+FREE AND INDEPENDENT STATES, THAT THEY ARE ABSOLVED FROM ALL ALLEGIANCE<br>
+TO THE BRITISH CROWN, AND THAT ALL POLITICAL CONNECTION BETWEEN THEM AND<br>
+THE STATE OF GREAT BRITAIN, IS AND OUGHT TO BE TOTALLY DISSOLVED, AND THAT<br>
+AS FREE AND INDEPENDENT STATES, THEY HAVE FULL POWER TO LEVY WAR,<br>
+CONCLUDE PEACE, CONTRACT ALLIANCES, ESTABLISH COMMERCE, AND TO DO ALL<br>
+OTHER ACTS AND THINGS WHICH INDEPENDENT STATES MAY OF RIGHT DO. AND FOR<br>
+THE SUPPORT OF THIS DECLARATION, WITH A FIRM RELIANCE ON THE PROTECTION<br>
+OF DIVINE PROVIDENCE, WE MUTUALLY PLEDGE TO EACH OTHER OUR LIVES,<br>
+OUR FORTUNES AND OUR SACRED HONOR.</b></font></blockquote>
+<p>
+This is the last paragraph of the Declaration of Independence.
+♦</p><p><a id="Complete-Example-3"><font color="#FF0000">Example 3</font></a></p>
+The following is the ciphertext to be analyzed.
+<blockquote>
+<font face="Courier New"><b>
+LPROZ OOGRJ ZGFLV TUKMC WFDQM PZXIJ LVRWQ XEOSZ ZHTEK UYSCR<br>
+PTFCZ UHXIJ LPPTD CPRBY OSMGY TLEVD UAQMF IFMZV LVYTO QDLHX<br>
+LBPLL KYCQY ODRKS ACTEU XZEVO UAQMF OSDSU BKMBJ QEORF WFQCK<br>
+HKSOD INGJZ SHGVV LMSZD WWHFJ AVQGF NUWMW AOIXT CSRYC YPPTP<br>
+LFUCR AVQHR RVRES QCKHM LGARF YHXZP CSNWS NCRQV GHRLR ZEDHF<br>
+JVUPC XZJQC ATISQ SCGXN BALWY MAQCY OSD<br>
+</b></font>
+</blockquote>
+<p>
+The following table shows the count of each factor in the range of 2 and 20.
+Kasiski's method suggests that the possible length of the unknown keyword
+	may be 3, 5 and 15.</p>
+<center>
+<table cellpadding="3" border="2">
+<tbody><tr>
+	<td align="LEFT"> <b>Factors</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 3 </td>
+	<td align="CENTER"> 4 </td>
+	<td align="CENTER"> 5 </td>
+	<td align="CENTER"> 6 </td>
+	<td align="CENTER"> 7 </td>
+	<td align="CENTER"> 8 </td>
+	<td align="CENTER"> 9 </td>
+	<td align="CENTER"> 10 </td>
+	<td align="CENTER"> 11 </td>
+	<td align="CENTER"> 12 </td>
+	<td align="CENTER"> 13 </td>
+	<td align="CENTER"> 14 </td>
+	<td align="CENTER"> 15 </td>
+	<td align="CENTER"> 16 </td>
+	<td align="CENTER"> 17 </td>
+	<td align="CENTER"> 18 </td>
+	<td align="CENTER"> 19 </td>
+	<td align="CENTER"> 20 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <b>Counts</b> </td>
+	<td bgcolor="#DDDDFF"> <b>5</b> </td>
+	<td bgcolor="#DDDDFF"> <b>5</b> </td>
+	<td> 2 </td>
+	<td bgcolor="#DDDDFF"> <b>5</b> </td>
+	<td> 3 </td>
+	<td> 1 </td>
+	<td> 0 </td>
+	<td> 2 </td>
+	<td> 3 </td>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 1 </td>
+	<td bgcolor="#DDDDFF"> <b>5</b> </td>
+	<td> 0 </td>
+	<td> 1 </td>
+	<td> 0 </td>
+	<td> 1 </td>
+	<td> 0 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+The following has the average values of the index of coincidence 
+	in the range of 1 and 20.
+Only one of these 20 average values is larger than 0.6
+	(<i>i.e.</i> 0.06073 for length 15).</p><center>
+  <table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 1 </td>
+	<td> 2 </td>
+	<td> 3 </td>
+	<td> 4 </td>
+	<td> 5 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.03849 </td>
+	<td> 0.03831 </td>
+	<td> 0.04325 </td>
+	<td> 0.04065 </td>
+	<td> 0.04496 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 6 </td>
+	<td> 7 </td>
+	<td> 8 </td>
+	<td> 9 </td>
+	<td> 10 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.04479 </td>
+	<td> 0.03877 </td>
+	<td> 0.04181 </td>
+	<td> 0.03915 </td>
+	<td> 0.04863 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 11 </td>
+	<td> 12 </td>
+	<td> 13 </td>
+	<td> 14 </td>
+	<td> 15 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.03506 </td>
+	<td> 0.04817 </td>
+	<td> 0.04186 </td>
+	<td> 0.03473 </td>
+	<td bgcolor="#DDDDFF"> <b>0.06073</b> </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 16 </td>
+	<td> 17 </td>
+	<td> 18 </td>
+	<td> 19 </td>
+	<td> 20 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.04141 </td>
+	<td> 0.03725 </td>
+	<td> 0.03631 </td>
+	<td> 0.03906 </td>
+	<td> 0.04978 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+Since both methods agree on 15, we use this value as our estimation.
+The recovered keyword is <font face="Courier New"><b>THEILIADQFHOMER</b></font>
+and the recovered plaintext is shown below:
+</p><p>
+</p><blockquote>
+<font face="Courier New"><b>
+SINGO GODBE SSTHE ANGER OFAAH ILLES SONOF PELCU STHAT BROUG<br>
+HTCMU NTLES SILLS UPOLT HEACH AEANS MANWA BRAVE SOULD IDIRS<br>
+ENDHU RRYIN GDOUN TOHAD ESAND MANWA HEROD IDITY IELBA PREYT<br>
+ODOGS ANDTU LTURE SFORS OWEPE THECO UNSEL SOFHO VEFUL FILLE<br>
+DFRMM THEDA YONWH ICHRH ESONO FATRE USKGN GOFME NANDG REARA<br>
+CHILL ESFIR STFCL LOUTW ITHON EANMT HER<br>
+</b></font>
+</blockquote>
+<p>
+You perhaps have already figured out what went wrong here,
+	because the keyword <font face="Courier New"><b>THE ILIAD QF HOMER</b></font>
+	seems not right (<i>i.e.</i>, <font face="Courier New"><b>QF</b></font>
+		instead of <font face="Courier New"><b>OF</b></font>).
+Consequently, the recovered plaintext reads a bit strange
+	with the wrong letters shown in blue.
+These letters are decrypted using <font face="Courier New"><b>Q</b></font>
+	instead of <font face="Courier New"><b>O</b></font>.
+</p><p>
+</p><blockquote>
+<font face="Courier New"><b>
+SING, O GOD<font color="#0000FF">B</font>ESS, THE ANGER OF A<font color="#0000FF">A</font>HILLES SON OF PEL<font color="#0000FF">C</font>US,<br>
+THAT BROUGHT C<font color="#0000FF">M</font>UNTLESS ILLS UPO<font color="#0000FF">L</font> THE ACHAEANS .....<br>
+</b></font>
+</blockquote>
+<p>
+The letter <font face="Courier New"><b>Q</b></font> is the 9-th in the keyword.
+The χ<sup>2</sup> method picks the <font face="Courier New"><b>Q</b></font> shift
+	of coset 9 because it produces the smallest χ<sup>2</sup> value.
+The following table shows the three smallest χ<sup>2</sup> values
+	and their corresponding shifts:
+</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td bgcolor="#FFFF00"> <b>Shift</b> </td>
+	<td> <font face="Courier New"><b>E</b></font> </td>
+	<td> <font face="Courier New"><b>O</b></font> </td>
+	<td> <font face="Courier New"><b>Q</b></font> </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00"> <b>χ<sup>2</sup> </b></td>
+	<td> 3.62 </td>
+	<td> 3.32 </td>
+	<td> 2.82 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+Now, if we choose the second smallest χ<sup>2</sup> of coset 9,
+	which corresponds to the shift of letter <font face="Courier New"><b>O</b></font>,
+	we are able to recover the ciphertext completely.
+</p><p>
+</p><blockquote>
+<font face="Courier New"><b>
+SING, O GODDESS, THE ANGER OF ACHILLES SON OF PELEUS, <br>
+THAT BROUGHT COUNTLESS ILLS UPON THE ACHAEANS.<br>
+MANY A BRAVE SOUL DID IT SEND HURRYING DOWN TO HADES,<br>
+AND MANY A HERO DID IT YIELD A PREY TO DOGS AND VULTURES<br>
+FOR SO WERE THE COUNSELS OF JOVE FULFILLED FROM THE DAY<br>
+ON WHICH THE SON OF ATREUS, KING OF MEN AND GREAT ACHILLES,<br>
+FIRST FELL OUT WITH ONE ANOTHER.<br>
+</b></font>
+</blockquote>
+<p>
+This is the opening of Book 1 in Homer's <b><i>The Iliad</i></b>.
+What we have learned from this example is that none of the discussed
+	methods is perfect.
+We have to do some educated guess work to crack a message.
+♦
+</p><p>
+
+
+<!-- --------------------- -->
+
+<a id="Complete-Example-4"></a></p><h3><a id="Complete-Example-4"><font color="#FF0000">Example 4</font></a></h3>
+
+The following is the ciphertext to be analyzed.
+<p>
+</p><blockquote>
+<font face="Courier New"><b>
+FIIFL VZOZS VPDCA ZVFSL EMRUL BQISC XVQTS NDMFT IDGIZ ILZDM<br>
+FFLVZ YMHCG DIGSL DSHEZ SIWMM XPNAN TIIRJ SFMWB XIDPS EWHAI<br>
+XYWQM EXVVV DMRUK XASPF OQTUP JLNTQ WTJYQ OLFOF EOVVW WTURX<br>
+DIGPT LLMFT INJYF OLKZU FXMVK CZISV AHDQQ VEVDM RTWIR MWYJI<br>
+GPRFO CFUWK ZYFUQ VGZZU KYLNT MXKZY SDEMW MMXPX SJUZK NAXQQ<br>
+ZVJSA ZICWN ERSIL BTUWJ HLUFI ZFNTQ GYMLO TARQJ MFLJL ISXMU<br>
+WUZPA VXUUD MVKNT MXUGL GZFPL BQFVZ HFQTI TSNQE XVSGR DSDLB<br>
+QBVVK YZOIF XNTQW LFZAX PFOCZ SHRJE ZQWJD CWQEU JYMYR FOUDQ<br>
+JIGFU ORFLU YAYJW MTMPC VCEFY ITNTU WYSFX AAUZI GEIZS GEQRK<br>
+OCFTF IGIYN IWGLQ FSJOY QBXYW XGEXS WBUZH KZYPA SI<br>
+</b></font>
+</blockquote>
+<p>
+The following factor counts from a Kasiski analysis shows that
+	the length of the keyword may be 3 or 6, and perhaps 12.
+</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr>
+	<td align="LEFT"> <b>Factors</b> </td>
+	<td align="CENTER"> 2 </td>
+	<td align="CENTER"> 3 </td>
+	<td align="CENTER"> 4 </td>
+	<td align="CENTER"> 5 </td>
+	<td align="CENTER"> 6 </td>
+	<td align="CENTER"> 7 </td>
+	<td align="CENTER"> 8 </td>
+	<td align="CENTER"> 9 </td>
+	<td align="CENTER"> 10 </td>
+	<td align="CENTER"> 11 </td>
+	<td align="CENTER"> 12 </td>
+	<td align="CENTER"> 13 </td>
+	<td align="CENTER"> 14 </td>
+	<td align="CENTER"> 15 </td>
+	<td align="CENTER"> 16 </td>
+	<td align="CENTER"> 17 </td>
+	<td align="CENTER"> 18 </td>
+	<td align="CENTER"> 19 </td>
+	<td align="CENTER"> 20 </td>
+</tr>
+<tr align="CENTER">
+	<td align="LEFT"> <b>Counts</b> </td>
+	<td bgcolor="#DDDDFF"> <b>21</b> </td>
+	<td bgcolor="#DDDDFF"> <b>19</b> </td>
+	<td> 10 </td>
+	<td>  4 </td>
+	<td bgcolor="#DDDDFF"> <b>19</b> </td>
+	<td> 2 </td>
+	<td> 6 </td>
+	<td> 5 </td>
+	<td> 4 </td>
+	<td> 0 </td>
+	<td bgcolor="#DDDDFF"> <b>10</b> </td>
+	<td> 2 </td>
+	<td> 2 </td>
+	<td> 4 </td>
+	<td> 3 </td>
+	<td> 0 </td>
+	<td> 5 </td>
+	<td> 0 </td>
+	<td> 2 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+The following shows the average index of coincidence value
+	of each coset.
+The largest one is 0.06423 (length 12),
+	followed by the next largest one 0.06379 (length 6).
+</p><p>
+</p><center>
+<table cellpadding="3" border="2">
+<tbody><tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 1 </td>
+	<td> 2 </td>
+	<td> 3 </td>
+	<td> 4 </td>
+	<td> 5 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.04142 </td>
+	<td> 0.04636 </td>
+	<td> 0.04888 </td>
+	<td> 0.04582 </td>
+	<td> 0.04116 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 6 </td>
+	<td> 7 </td>
+	<td> 8 </td>
+	<td> 9 </td>
+	<td> 10 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td bgcolor="#DDDDFF"> <b>0.06379</b> </td>
+	<td> 0.04195 </td>
+	<td> 0.04688 </td>
+	<td> 0.04729 </td>
+	<td> 0.04468 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 11 </td>
+	<td> 12 </td>
+	<td> 13 </td>
+	<td> 14 </td>
+	<td> 15 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.04005 </td>
+	<td bgcolor="#DDDDFF"> <b>0.06423</b> </td>
+	<td> 0.03853 </td>
+	<td> 0.04619 </td>
+	<td> 0.04735 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Length</b> </td>
+	<td> 16 </td>
+	<td> 17 </td>
+	<td> 18 </td>
+	<td> 19 </td>
+	<td> 20 </td>
+</tr>
+<tr align="CENTER">
+	<td bgcolor="#FFFF00" align="LEFT"> <b>Average</b> </td>
+	<td> 0.05121 </td>
+	<td> 0.04218 </td>
+	<td bgcolor="#DDDDFF"> <b>0.06125</b> </td>
+	<td> 0.04229 </td>
+	<td> 0.04501 </td>
+</tr>
+</tbody></table>
+</center>
+<p>
+Therefore, the most likely keyword length is 6
+	because both methods reported this value,
+	and the recovered keyword is
+		<font face="Courier New"><b>SUMMER</b></font>	
+What if we choose 12 from the IOC method?
+The recovered keyword is
+	<font face="Courier New"><b>SUMMERSUMMER</b></font>.
+Both keywords deliver the same decrypted result.
+This should not surprise you because <font face="Courier New"><b>SUMMERSUMMER</b></font>
+	obtained by the IOC method simply repeats the actual keyword
+	<font face="Courier New"><b>SUMMER</b></font> twice,
+	and the decryption procedure of using
+	<font face="Courier New"><b>SUMMERSUMMER</b></font> is exactly the same as using
+	<font face="Courier New"><b>SUMMER</b></font>.
+The following is the recovered plaintext.
+</p><p>
+</p><blockquote>
+<font face="Courier New"><b>
+NOWTH EHUNG RYLIO NROAR SANDT HEWOL FBEHO WLSTH EMOON WHILS<br>
+TTHEH EAVYP LOUGH MANSN ORESA LLWIT HWEAR YTASK FORDO NENOW<br>
+THEWA STEDB RANDS DOGLO WWHIL STTHE SCREE CHOWL SCREE CHING<br>
+LOUDP UTSTH EWRET CHTHA TLIES INWOE INREM EMBRA NCEOF ASHRO<br>
+UDNOW ITIST HETIM EOFNI GHTTH ATTHE GRAVE SALLG APING WIDEE<br>
+VERYO NELET SFORT HHISS PRITE INTHE CHURC HWAYP ATHST OGLID<br>
+EANDW EFAIR IESTH ATDOR UNBYT HETRI PLEHE CATES TEAMF ROMTH<br>
+EPRES ENCEO FTHES UNFOL LOWIN GDARK NESSL IKEAD REAMN OWARE<br>
+FROLI CNOTA MOUSE SHALL DISTU RBTHI SHALL OWDHO USEIA MSENT<br>
+WITHB ROOMB EFORE TOSWE EPTHE DUSTB EHIND THEDO OR<br>
+</b></font>
+</blockquote>
+<p>
+Adding punctuation and spaces back, we have the following:
+</p><p>
+</p><blockquote>
+<font face="Courier New"><b>
+Now the hungry lion roars,<br>	
+And the wolf behowls the moon;<br>	
+Whilst the heavy ploughman snores,<br>	
+All with weary task fordone.<br>
+Now the wasted brands do glow,<br>
+Whilst the screech-owl, screeching loud,<br>
+Puts the wretch that lies in woe<br>
+In remembrance of a shroud.<br>
+Now it is the time of night<br>
+That the graves, all gaping wide,<br>
+Every one lets forth his sprite,<br>
+In the church-way paths to glide:<br>
+And we fairies, that do run<br>
+By the triple Hecateâ€™s team,<br>
+From the presence of the sun,<br>
+Following darkness like a dream,<br>	
+Now are frolic; not a mouse<br>
+Shall disturb this hallowâ€™d house:<br>
+I am sent with broom before,<br>
+To sweep the dust behind the door.<br>
+</b></font>
+<!-- -------------------------------------------- -->
+<!-- -------------------------------------------- -->
+</blockquote>
+<p>
+</p><center>
+<img src="./GrLine.gif" border="0">
+<table cellpadding="3" border="0">
+<tbody><tr align="CENTER">
+	<td> <a href="http://www.cs.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-Frequency-Analysis.html"><img src="./ARROW-left.gif" border="0"></a>
+		</td>
+	<td> &nbsp;&nbsp;&nbsp;
+		</td>
+	<td> <a href="http://www.cs.mtu.edu/~shene/NSF-4/Tutorial/index.html"><img src="./ARROW-top.gif" border="0"></a>
+		</td>
+	<td> &nbsp;&nbsp;&nbsp;
+		</td>
+	<td> <a href="http://www.cs.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-GUIDE.html"><img src="./ARROW-right.gif" border="0"></a>
+		</td>
+</tr>
+</tbody></table>
+</center>
+</font><p><font size="4">
+
+
+</font>
+
+
+
+</p></article></body></html>

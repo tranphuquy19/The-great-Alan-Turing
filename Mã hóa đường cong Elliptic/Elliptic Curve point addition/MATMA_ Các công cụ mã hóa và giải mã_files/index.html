@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!-- saved from url=(0088)http://192.168.1.5/mod/resource/cryptolab/Elliptic%20Curve%20point%20addition%20(R).html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Elliptic Curve point addition (ℝ)</title>
+    <script type="text/javascript" src="./jquery.min.js.download"></script>
+    <script type="text/javascript" src="./jquery.flot.js.download"></script>
+    <script type="text/javascript" src="./ec.js.download"></script>
+    <link rel="stylesheet" type="text/css" href="./css">
+    <link rel="stylesheet" type="text/css" href="./ec.css">
+  </head>
+  <body>
+    <header>
+      <h1>Elliptic Curve point addition (ℝ)</h1>
+      <nav>
+        <ul>
+          <li class="field">ℝ</li>
+          <li><a href="https://cdn.rawgit.com/andreacorbellini/ecc/920b29a/interactive/reals-add.html" class="active">Addition</a></li>
+          <li><a href="https://cdn.rawgit.com/andreacorbellini/ecc/920b29a/interactive/reals-mul.html">Multiplication</a></li>
+          <li class="field">𝔽<sub>p</sub></li>
+          <li><a href="https://cdn.rawgit.com/andreacorbellini/ecc/920b29a/interactive/modk-add.html">Addition</a></li>
+          <li><a href="https://cdn.rawgit.com/andreacorbellini/ecc/920b29a/interactive/modk-mul.html">Multiplication</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div id="plot" class="box" style="padding: 0px; position: relative;"><canvas class="flot-base" width="600" height="600" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 600px; height: 600px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 306px; text-align: center;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 360px; text-align: center;">1</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 415px; text-align: center;">2</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 470px; text-align: center;">3</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 524px; text-align: center;">4</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 579px; text-align: center;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 29px; text-align: center;">-5</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 84px; text-align: center;">-4</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 138px; text-align: center;">-3</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 193px; text-align: center;">-2</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 46px; top: 573px; left: 248px; text-align: center;">-1</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 278px; left: 8px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 224px; left: 8px; text-align: right;">1</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 171px; left: 8px; text-align: right;">2</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 117px; left: 8px; text-align: right;">3</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 63px; left: 8px; text-align: right;">4</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 10px; left: 8px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 546px; left: 2px; text-align: right;">-5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 493px; left: 2px; text-align: right;">-4</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 439px; left: 2px; text-align: right;">-3</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 385px; left: 2px; text-align: right;">-2</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 332px; left: 2px; text-align: right;">-1</div></div></div><canvas class="flot-overlay" width="600" height="600" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 600px; height: 600px;"></canvas><label class="point-label" style="position: absolute; width: 2em; line-height: 2em; text-align: center; border-radius: 50%; opacity: 0.8; background-color: rgb(237, 194, 64); display: block; left: 373.336px; top: 194.02px;">P</label><label class="point-label" style="position: absolute; width: 2em; line-height: 2em; text-align: center; border-radius: 50%; opacity: 0.8; background-color: rgb(237, 194, 64); display: block; left: 489.316px; top: 78.0405px;">Q</label><label class="point-label" style="position: absolute; width: 2em; line-height: 2em; text-align: center; border-radius: 50%; opacity: 0.8; background-color: rgb(203, 75, 75); display: block; left: 141.377px; top: 194.02px;">R</label></div>
+      <div class="box">
+        <div id="form">
+          <div id="curve-coefficients" class="parameters">
+            <p>Curve:</p>
+            <div class="parameter curve-coefficient"><label for="coefficient-a">a</label><input id="coefficient-a" name="a" value="-7" type="number" step="any"></div>
+            <div class="parameter curve-coefficient"><label for="coefficient-b">b</label><input id="coefficient-b" name="b" value="10" type="number" step="any"></div>
+          </div>
+          <div id="point-p-coordinates" class="parameters">
+            <p><em>P</em>:</p>
+            <div class="parameter point-coordinate"><label for="point-p-x">x</label><input id="point-p-x" name="px" value="1" type="number" step="any"></div>
+            <div class="parameter point-coordinate"><label for="point-p-y">y</label><input id="point-p-y" name="py" value="2" type="number" step="any"></div>
+          </div>
+          <div id="point-q-coordinates" class="parameters">
+            <p><em>Q</em>:</p>
+            <div class="parameter point-coordinate"><label for="point-q-x">x</label><input id="point-q-x" name="qx" value="3" type="number" step="any"></div>
+            <div class="parameter point-coordinate"><label for="point-q-y">y</label><input id="point-q-y" name="qy" value="4" type="number" step="any"></div>
+          </div>
+          <div id="point-r-coordinates" class="parameters">
+            <p><em>R</em> = <em>P</em> + <em>Q</em>:</p>
+            <div class="parameter point-coordinate result"><label for="point-r-x">x</label><input id="point-r-x" name="rx" step="any" readonly=""></div>
+            <div class="parameter point-coordinate result"><label for="point-r-y">y</label><input id="point-r-y" name="ry" step="any" readonly=""></div>
+          </div>
+        </div>
+        <div id="summary">
+          <p>Point addition over the elliptic curve <span class="curve-equation"><em>y</em><sup>2</sup> = <em>x</em><sup>3</sup>  - 7<em>x</em> + 10</span> in ℝ.</p>
+          <p class="curve-singular-warning" style="display: none;"><strong>Warning:</strong> this curve is singular.</p>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <p>This tool was created for <a href="http://andrea.corbellini.name/2015/05/17/elliptic-curve-cryptography-a-gentle-introduction/">Elliptic Curve Cryptography: a gentle introduction</a>.</p>
+      <p>It's free software, released under the <a href="http://opensource.org/licenses/MIT">MIT license</a>, hosted on <a href="https://github.com/andreacorbellini/ecc">GitHub</a> and served by <a href="http://rawgit.com/">RawGit</a>.</p>
+    </footer>
+    <script type="text/javascript">
+        $(function() {
+            $.ec.curve = new $.ec.reals.PointAddition();
+        });
+    </script>
+  
+
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div><div class="ginger-floatingG-contentPopup"><div class="ginger-floatingG-contentPopup-wrap"><a class="ginger-floatingG-contentPopup-close">×</a><div class="ginger-floatingG-contentPopup-frame"><iframe scrolling="no" src="./saved_resource.html"></iframe></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./index(1).html"></iframe></div></div></body></html>

@@ -1,0 +1,65 @@
+
+<!-- saved from url=(0088)http://192.168.1.5/mod/resource/cryptolab/JavaScript%20OTP%20&%20S_Key%20Calculator.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>jsotp: JavaScript OTP &amp; S/Key Calculator</title>
+<script language="JavaScript" src="./jsotp.js.download"></script>
+</head>
+
+<body>
+
+<noscript>
+<DIV ALIGN="center"><B>Warning: JavaScript appears to be disabled. To run this
+calculator, JavaScript needs to be enabled.</B></DIV><BR><BR>
+</noscript>
+
+<div align="center">
+<b><big>jsotp: JavaScript OTP Calculator</big></b><br>
+<small>This calculator generates passwords for the OTP or S/Key one-time-password systems.</small>
+</div>
+
+<br>
+
+<form onsubmit="javascript:return false;">
+Challenge: <input type="text" id="challenge" size="36">
+(<em>e.g.</em>, 98 seed123)
+<p>
+Secret: <input type="password" id="secret" size="40">
+(<em>i.e.</em>, your passphrase)
+</p><p>
+Display results in:
+<input type="radio" name="format" onclick="javascript:JSOTP_FORMAT=a_to_6word;">Six-word format
+&nbsp;
+<input type="radio" name="format" onclick="javascript:JSOTP_FORMAT=a_to_hex;">Hex format
+&nbsp;
+<input type="radio" name="format" checked="" onclick="javascript:JSOTP_FORMAT=a_to_both;">Both
+</p><p>
+Compute <input type="text" id="num_pw" value="1" size="2">
+password(s)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(If more than 1, results will be displayed in a new window.)
+</p><p>
+Compute with:
+<input type="button" value=" MD4 " onclick="javascript:with_hash(&#39;MD4&#39;);">
+&nbsp;&nbsp;
+<input type="button" value=" MD5 " onclick="javascript:with_hash(&#39;MD5&#39;);">
+&nbsp;&nbsp;
+<input type="button" value=" SHA-1 " onclick="javascript:with_hash(&#39;SHA1&#39;);">
+&nbsp;&nbsp;
+<input type="button" value=" RIPEMD-160 " onclick="javascript:with_hash(&#39;RMD160&#39;);">
+</p><p>
+<b>Response</b> (<em>i.e.</em>, your one-time password)<br>
+<input type="text" id="answer" size="65">
+</p><p>
+<a href="http://www.ocf.berkeley.edu/~jjlin/jsotp/"><em>jsotp</em></a>
+[<a href="http://www.ocf.berkeley.edu/~jjlin/jsotp/about.html">?</a>] by Jeremy
+Lin. Suggestions, bugs, etc? <a href="mailto:jjlin-at-OCF.Berkeley.EDU">Email
+me</a>.
+</p><p>
+Also available: <em>jsotp</em> versions containing only
+<a href="http://www.ocf.berkeley.edu/~jjlin/jsotp/md4/">MD4</a>,
+<a href="http://www.ocf.berkeley.edu/~jjlin/jsotp/md5/">MD5</a>,
+<a href="http://www.ocf.berkeley.edu/~jjlin/jsotp/sha1/">SHA-1</a>, or
+<a href="http://www.ocf.berkeley.edu/~jjlin/jsotp/rmd160/">RIPEMD-160</a> code.
+</p></form>
+
+
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div><div class="ginger-floatingG-contentPopup"><div class="ginger-floatingG-contentPopup-wrap"><a class="ginger-floatingG-contentPopup-close">×</a><div class="ginger-floatingG-contentPopup-frame"><iframe scrolling="no" src="./saved_resource.html"></iframe></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./index(1).html"></iframe></div></div></body></html>

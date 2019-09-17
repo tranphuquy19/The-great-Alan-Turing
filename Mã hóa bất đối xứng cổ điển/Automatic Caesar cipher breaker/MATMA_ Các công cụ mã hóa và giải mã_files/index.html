@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- saved from url=(0099)http://192.168.1.5/mod/resource/cryptolab/Automatic%20Caesar%20cipher%20breaker%20(JavaScript).html -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>Automatic Caesar cipher breaker (JavaScript)</title>
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Script-Type" content="application/javascript">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="Stylesheet" href="./common.css" type="text/css" media="all">
+	<link rel="Stylesheet" href="./screen.css" type="text/css" media="screen">
+	<link rel="Stylesheet" href="./print.css" type="text/css" media="print">
+	<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://www.nayuki.io/rss20.xml">
+<style type="text/css">
+#guesses tr {
+	cursor: pointer;
+}
+#guesses div.bar {
+	height: 1em;
+	background: #80C0FF;
+}
+#guesses tr.active {
+	font-weight: bold;
+}
+#guesses tr.active div.bar {
+	background: #60A0FF;
+}
+</style>
+</head>
+
+<body>
+<div id="main">
+<article>
+<h1> Automatic Caesar cipher/breaker</h1>
+
+<noscript>
+	&lt;p&gt;This requires JavaScript, which is not supported by your browser or is disabled.&lt;/p&gt;
+</noscript>
+<script async="" src="./analytics.js.download"></script><script type="application/javascript" src="./automatic-caesar-cipher-breaker.js.download"></script>
+<form action="https://www.nayuki.io/page/automatic-caesar-cipher-breaker-javascript#" method="get" onsubmit="return false">
+	<table class="noborder">
+		<tbody>
+			<tr>
+				<td><label for="text">Text:</label></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="button" value="Break code" onclick="doBreak()"></td>
+			</tr>
+			<tr>
+				<td>Shift:</td>
+				<td>
+					<input type="text" value="0" readonly="readonly" id="shift" style="width: 4em;">
+					<input type="button" value="Up" onclick="setShift(getShift()+1)">
+					<input type="button" value="Down" onclick="setShift(getShift()-1)">				</td>
+			</tr>
+			<tr>
+				<td>Best guesses:</td>
+				<td>
+					<table class="col1right col2right" style="font-size:70%; margin-top:0em">
+						<thead>
+							<tr>
+								<th>Shift</th>
+								<th colspan="2">Entropy per letter (bits) <span style="font-weight:normal">(lower is better)</span></th>
+							</tr>
+						</thead>
+						<tbody id="guesses"></tbody>
+					</table>				</td>
+			</tr>
+		</tbody>
+	</table>
+    <p>
+      <textarea name="textarea" cols="50" rows="10" id="text" style="width: 40em; height: 15em;">GUVF VF FBZR FNZCYR GRKG URER.</textarea>
+    </p>
+</form>
+
+<h2>Description</h2>
+<p>Type or paste the ciphertext, then press <q>Break code</q>. The ciphertext is decrypted automatically with the best guessed shift. If the result is incorrect, you can manually try all the different shifts by pressing <q>Up</q>/<q>Down</q>, or by clicking on a table row.</p>
+<p>The case is preserved and non-letters are unchanged by encryption or decryption. The automatic decryption done by trying all 26 possible shift values and calculating the cross-entropy with English letter frequencies (unigram model). The algorithm works best on English text, but in practice it works well on other European languages too.</p>
+<p>&nbsp;</p>
+
+</article>
+</div>
+
+</body></html>

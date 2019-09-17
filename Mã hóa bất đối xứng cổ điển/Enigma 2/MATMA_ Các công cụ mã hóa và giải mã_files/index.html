@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<!-- saved from url=(0098)http://192.168.1.5/mod/resource/cryptolab/Enigma%20Simulator%20_%20JavaScript%20_%20Computing.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Enigma Simulator | JavaScript | Computing</title>
+<link rel="canonical" href="https://www.advanced-ict.info/javascript/enigma.html">
+<link href="./screen.css" rel="stylesheet" type="text/css" media="screen">
+<link href="./print.css" rel="stylesheet" type="text/css" media="print">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="ROBOTS" content="index">
+<meta name="AUTHOR" content="Andrew Virnuls">
+<meta name="DESCRIPTION" content="Understand how messages were encrypted in WWII with the interactive Enigma simulator.">
+<meta name="KEYWORDS" content="enigma, javascript, simulation, encryption, cipher">
+<meta name="theme-color" content="#37143F">
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "item": {
+      "@id": "https://www.advanced-ict.info",
+      "name": "Home",
+      "image": "https://www.advanced-ict.info/graphics/logo_small.png"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "item": {
+      "@id": "https://www.advanced-ict.info/javascript/js_index.html",
+      "name": "JavaScript"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 3,
+    "item": {
+      "@id": "https://www.advanced-ict.info/javascript/enigma.html",
+      "name": "Enigma"
+    }
+  }]
+}
+</script>
+<style>
+#enigma				{background-color: #000000; color: #FFFFF; width: 453px; overflow:hidden; border-radius: 15px; height: 551px; display: none; z-index: 6; position: absolute; top: 10px; -moz-box-shadow: 5px 5px 5px 0px #111; -webkit-box-shadow: 5px 5px 5px 0px #111; box-shadow: 5px 5px 5px 0px #111}
+#enigma img			{border: 0px; margin: 0px; padding: 0px; float: left; display: block}
+#settings			{background-color: #CCCCCC; border-radius: 10px; padding: 20px; width: 400px; height: 435px; display: none; z-index: 7; position: absolute; text-align: center; top: 50px; -moz-box-shadow: 5px 5px 5px 0px #111; -webkit-box-shadow: 5px 5px 5px 0px #111; box-shadow: 5px 5px 5px 0px #111; border: 1px solid black}
+#settings table		{display: block; width: 320px; margin-left: auto; margin-right: auto}
+#settings table td	{padding: 8px; text-align: left}
+</style>
+<script type="text/javascript">
+<!--
+	var i, last_letter, last_bulb, rotor1, rotor2, rotor3, done_settings, duplicate_rotor = 0, loop;
+	rotor1 = 0;
+	rotor2 = 0;
+	rotor3 = 0;
+	done_settings = 0;
+	last_letter = 17;
+	last_bulb = 1;
+
+	wheel1 = new Array(26);
+	wheel2 = new Array(26);
+	wheel3 = new Array(26);
+	reflector = new Array(26);
+	on_bulb = new Array(26);
+
+	for(i=0;i<=26;i++){
+		on_bulb[i] = new Image();
+		on_bulb[i].src = "enigma/" + i + "_on.jpg";
+	}
+
+	letters = new Array(0,10,23,21,12,3,13,14,15,8,16,17,26,25,24,9,18,1,4,11,5,7,22,2,20,19,6);
+
+	knock_on2 = new Array(2);
+	knock_on3 = new Array(2);
+
+	rotor = new Array();
+	rotor[1] = new Array(4,10,12,5,11,6,3,16,21,25,13,19,14,22,24,7,23,20,18,15,0,8,1,17,2,9);
+	rotor[2] = new Array(0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4);
+	rotor[3] = new Array(1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14);
+	rotor[4] = new Array(4,18,14,21,15,25,9,0,24,16,20,8,17,7,23,11,13,5,19,6,10,3,2,12,22,1);
+	rotor[5] = new Array(21,25,1,17,6,8,19,24,20,15,18,3,13,7,11,23,0,22,12,9,16,14,5,4,2,10);
+	rotor[6] = new Array(9,15,6,21,14,20,12,5,24,16,1,4,13,7,25,17,3,10,0,18,23,11,8,2,19,22);
+	rotor[7] = new Array(13,25,9,7,6,17,2,23,12,24,18,22,1,14,20,5,0,8,21,11,15,4,10,16,3,19);
+	rotor[8] = new Array(5,10,16,7,19,11,23,14,2,1,9,18,15,3,25,17,0,12,4,22,13,8,20,24,6,21);
+
+	reflect = new Array();
+	reflect[1] = new Array(24,17,20,7,16,18,11,3,15,23,13,6,14,10,12,8,4,1,5,25,2,22,21,9,0,19);
+	reflect[2] = new Array(5,13,15,9,8,0,14,24,4,3,17,25,23,22,6,2,19,10,20,16,18,1,13,12,7,11);
+	reflect[3] = new Array(4,13,10,16,0,20,24,22,9,8,2,14,15,1,11,12,3,23,25,21,5,19,7,17,6,18);
+	reflect[4] = new Array(17,3,14,1,9,13,19,10,21,4,7,12,11,5,2,22,25,0,23,6,24,8,15,18,20,18);
+
+	knock = new Array();
+	knock[1] = new Array(18,18);
+	knock[2] = new Array(6,6);
+	knock[3] = new Array(23,23);
+	knock[4] = new Array(11,11);
+	knock[5] = new Array(1,1);
+	knock[6] = new Array(1,14);
+	knock[7] = new Array(1,14);
+	knock[8] = new Array(1,14);
+
+	function change_settings()
+	{
+		if(duplicate_rotor == 1)
+		{
+			alert("Each rotor can only be used once - please change your settings!");
+		}
+		else
+		{
+			rotor1 = document.getElementById("position1").value;
+			rotor2 = document.getElementById("position2").value;
+			rotor3 = document.getElementById("position3").value;
+
+			for(loop=0;loop<26;loop++)
+			{
+				wheel1[loop] = rotor[document.getElementById("rotor_one").value][loop];
+				wheel2[loop] = rotor[document.getElementById("rotor_two").value][loop];
+				wheel3[loop] = rotor[document.getElementById("rotor_three").value][loop];
+				reflector[loop] = reflect[document.getElementById("reflector").value][loop];
+			}
+
+			for(loop=0;loop<2;loop++)
+			{
+				knock_on2[loop] = knock[document.getElementById("rotor_two").value][loop];
+				knock_on3[loop] = knock[document.getElementById("rotor_three").value][loop];
+			}
+			
+			done_settings = 1;
+			set_rotors();
+			document.getElementById("settings").style.display = "None";
+		}
+	}
+
+	function check_rotors()
+	{
+		if(document.getElementById("rotor_one").value == document.getElementById("rotor_two").value | document.getElementById("rotor_two").value == document.getElementById("rotor_three").value | document.getElementById("rotor_one").value == document.getElementById("rotor_three").value)
+		{
+			duplicate_rotor = 1;
+		}
+		else
+		{
+			duplicate_rotor = 0;
+		}
+	}
+
+	function inverse(wheel, code)
+	{
+		var i;
+		i = 0;
+		while(wheel[i] != code){
+			i++;
+		}
+		return i;
+	}
+
+	function set_rotors()
+	{
+		document.getElementById("rotor_1").src = "enigma/" + rotor1 + ".jpg";
+		document.getElementById("rotor_2").src = "enigma/" + rotor2 + ".jpg";
+		document.getElementById("rotor_3").src = "enigma/" + rotor3 + ".jpg";
+	}
+
+	function encypher(letter)
+	{
+		letter = wheel3[(letter + (rotor3 - 1)) % 26];
+		letter = wheel2[(letter + (rotor2 - 1)) % 26];
+		letter = wheel1[(letter + (rotor1 - 1)) % 26];
+		letter = reflector[letter];
+		letter = ((inverse(wheel1,letter) - (rotor1 - 1)) + 26) % 26;
+		letter = ((inverse(wheel2,letter) - (rotor2 - 1)) + 26) % 26;
+		letter = ((inverse(wheel3,letter) - (rotor3 - 1)) + 26) % 26;
+		return letter;
+	}
+
+	function lookup(letter)
+	{
+		return letters[letter];
+	}
+
+	function settings()
+	{
+		keyboard[last_bulb + 8].src = "enigma/" + last_letter + "_off.jpg";
+		document.getElementById("settings").style.display = "inline-block";
+	}
+
+	function press(key)
+	{
+		if(done_settings)
+		{
+			rotor3 = (rotor3 % 26) + 1;
+			if(rotor3 == knock_on3[0] | rotor3 == knock_on3[1])
+			{
+				rotor2 = (rotor2 % 26) + 1;
+
+				if(rotor2 == knock_on2[0] | rotor2 == knock_on3[1])
+				{
+					rotor1 = (rotor1 % 26) + 1;
+				}
+			}
+	
+			document.getElementById("rotor_1").src = "enigma/" + rotor1 + ".jpg";
+			document.getElementById("rotor_2").src = "enigma/" + rotor2 + ".jpg";
+			document.getElementById("rotor_3").src = "enigma/" + rotor3 + ".jpg";
+
+			letter = encypher(key) + 1;
+			bulb = lookup(letter);
+			last_bulb = lookup(last_letter);
+
+			keyboard[last_bulb + 8].src = "enigma/" + last_letter + "_off.jpg";
+			keyboard[bulb + 8].src = on_bulb[letter].src;
+			last_letter = letter;
+			last_bulb = bulb;
+	
+		}
+		else
+		{
+			alert("You must choose the Enigma settings before coding a message.");
+			settings();
+		}
+	}
+
+	function show_enigma()
+	{
+		document.getElementById("enigma").style.display = "inline-block";
+		settings();
+	}
+
+	function hide()
+	{
+		document.getElementById("enigma").style.display = "none";
+		document.getElementById("settings").style.display = "none";
+	}
+
+	function position_divs()
+	{
+		document.getElementById("enigma").style.left = (window.innerWidth - 453)/2 + "px";
+		document.getElementById("settings").style.left = (window.innerWidth - 440)/2 + "px";
+	}
+//-->
+</script>
+</head>
+
+<body onresize="position_divs();" onload="position_divs();">
+<nav></nav>
+<header>
+<h1>Enigma</h1>
+</header>
+<article>
+<p>This page uses JavaScript to simulate a three-rotor Enigma machine; the type used by the German army during World War II.  Enigma machines were used to encrypt messages by exchanging letters in the <i>plaintext</i> to produce the <i>ciphertext</i> in a manner far more complex than the standard Caesar Shift <a href="https://www.advanced-ict.info/interactive/substitution.html">substitution cipher</a> (i.e. if you press the same letter on the keyboard twice, you don't get the same two letters produced as output).  The machine was interesting because it could be used to both encipher and decipher using the same settings - the operator at the other end set his rotors to the same position as those in the sender's machine, and typed in the <i>ciphertext</i> to produce the <i>plaintext</i>.</p>
+<p>Please note that this page is intended to be a demonstration of how an Enigma machine worked - an illustration of the complexity of the substitution and the symmetry of the encryption/decryption process - rather than a historically-accurate device for deciphering original war-time documents. </p>
+<p>You can read about, and try, some simpler <a href="https://www.advanced-ict.info/interactive/substitution.html">substitution ciphers</a> in the <a href="https://www.advanced-ict.info/interactive/index.html">Interactive section</a>. </p>
+<h2>How it works</h2>
+<p>My Enigma machine emulator can be use to both encrypt and decrypt messages, provided both sender and receiver use the same rotor positions to start with.  When you start the emulator, you will be asked to choose three rotors from the full set of eight that were used in the three-rotor Enigma, together with their starting positions.  You will also need to choose one of the four possible reflectors.</p>
+<p>To successfully decrypt a message, click the <i>Reset</i> button at the 
+bottom right of the keyboard and enter the same rotor settings again. If you 
+have any trouble working the Enigma, send an e-mail message to <em>andrew@[this 
+domain]</em>.</p>
+<p>In a real Enigma machine, a extra level of complexity can be added by using the plugboard - a set of cables and sockets that can be used to re-map the keys on the keyboard.  This has been omitted from my version, but will be added as soon as I get time!</p>
+<input name="button" type="button" style="display: block; width: 200px; margin-left: auto; margin-right: auto" onclick="show_enigma();" value="Launch Enigma">
+</article>
+<div id="enigma" style="left: 456.5px; display: none;">
+<img alt="Enigma Machine" src="./enigma_rotor1.jpg" width="453" height="161"><img alt="Enigma Machine" src="./enigma_rotor2.jpg" width="126" height="15">
+<img alt="Enigma Machine" src="./1.jpg" width="17" height="15" id="rotor_1"><img alt="Enigma Machine" src="./enigma_rotor4.jpg" width="30" height="15">
+<img alt="Enigma Machine" src="./1.jpg" width="17" height="15" id="rotor_2"><img alt="Enigma Machine" src="./enigma_rotor6.jpg" width="29" height="15">
+<img alt="Enigma Machine" src="./17.jpg" width="17" height="15" id="rotor_3"><img alt="Enigma Machine" src="./enigma_rotor8.jpg" width="217" height="15">
+<img alt="Enigma Machine" src="./enigma_rotor9.jpg" width="453" height="88">
+<img alt="Enigma Machine" src="./17_off.jpg" width="90" height="30">
+<img alt="Enigma Machine" src="./23_on.jpg" width="45" height="30">
+<img alt="Enigma Machine" src="./5_off.jpg" width="40" height="30">
+<img alt="Enigma Machine" src="./18_off.jpg" width="40" height="30">
+<img alt="Enigma Machine" src="./20_off.jpg" width="42" height="30">
+<img alt="Enigma Machine" src="./26_off.jpg" width="42" height="30">
+<img alt="Enigma Machine" src="./21_off.jpg" width="40" height="30">
+<img alt="Enigma Machine" src="./9_off.jpg" width="39" height="30">
+<img alt="Enigma Machine" src="./15_off.jpg" width="75" height="30">
+<img alt="Enigma Machine" src="./1_off.jpg" width="105" height="36">
+<img alt="Enigma Machine" src="./19_off.jpg" width="45" height="36">
+<img alt="Enigma Machine" src="./4_off.jpg" width="41" height="36">
+<img alt="Enigma Machine" src="./6_off.jpg" width="41" height="36">
+<img alt="Enigma Machine" src="./7_off.jpg" width="41" height="36">
+<img alt="Enigma Machine" src="./8_off.jpg" width="41" height="36">
+<img alt="Enigma Machine" src="./10_off.jpg" width="41" height="36">
+<img alt="Enigma Machine" src="./11_off.jpg" width="98" height="36">
+<img alt="Enigma Machine" src="./16_off.jpg" width="79" height="40">
+<img alt="Enigma Machine" src="./25_off.jpg" width="41" height="40">
+<img alt="Enigma Machine" src="./24_off.jpg" width="40" height="40">
+<img alt="Enigma Machine" src="./3_off.jpg" width="42" height="40">
+<img alt="Enigma Machine" src="./22_off.jpg" width="42" height="40">
+<img alt="Enigma Machine" src="./2_off.jpg" width="41" height="40">
+<img alt="Enigma Machine" src="./14_off.jpg" width="40" height="40">
+<img alt="Enigma Machine" src="./13_off.jpg" width="40" height="40">
+<img alt="Enigma Machine" src="./12_off.jpg" width="88" height="40">
+<img alt="Enigma Machine" src="./enigma_keyboard.jpg" usemap="#keyboard" width="453" height="180">
+<div style="position: absolute; top: 7px; right: 10px; font:Arial, Helvetica, sans-serif; color:#CC0000; font-weight: bold; font-size: 16px; cursor: pointer" onclick="hide();">X</div>
+<map name="keyboard">
+<area shape="circle" alt="Q" coords="66,33,15" href="javascript:press(16)">
+<area shape="circle" alt="W" coords="108,34,15" href="javascript:press(22)">
+<area shape="circle" alt="E" coords="150,34,15" href="javascript:press(4)">
+<area shape="circle" alt="R" coords="193,34,15" href="javascript:press(17)">
+<area shape="circle" alt="T" coords="235,34,15" href="javascript:press(19)">
+<area shape="circle" alt="Z" coords="279,34,15" href="javascript:press(25)">
+<area shape="circle" alt="U" coords="320,33,15" href="javascript:press(20)">
+<area shape="circle" alt="I" coords="363,32,15" href="javascript:press(8)">
+<area shape="circle" alt="O" coords="404,33,15" href="javascript:press(14)">
+<area shape="circle" alt="A" coords="81,74,15" href="javascript:press(0)">
+<area shape="circle" alt="S" coords="123,73,15" href="javascript:press(18)">
+<area shape="circle" alt="D" coords="165,73,15" href="javascript:press(3)">
+<area shape="circle" alt="F" coords="207,74,15" href="javascript:press(5)">
+<area shape="circle" alt="G" coords="250,72,15" href="javascript:press(6)">
+<area shape="circle" alt="H" coords="293,72,15" href="javascript:press(7)">
+<area shape="circle" alt="J" coords="334,72,15" href="javascript:press(9)">
+<area shape="circle" alt="K" coords="376,71,15" href="javascript:press(10)">
+<area shape="circle" alt="P" coords="53,113,15" href="javascript:press(15)">
+<area shape="circle" alt="Y" coords="95,113,15" href="javascript:press(24)">
+<area shape="circle" alt="X" coords="137,113,15" href="javascript:press(23)">
+<area shape="circle" alt="C" coords="179,113,15" href="javascript:press(2)">
+<area shape="circle" alt="V" coords="221,113,15" href="javascript:press(21)">
+<area shape="circle" alt="B" coords="263,112,15" href="javascript:press(1)">
+<area shape="circle" alt="N" coords="305,111,15" href="javascript:press(13)">
+<area shape="circle" alt="M" coords="346,111,15" href="javascript:press(12)">
+<area shape="circle" alt="L" coords="388,110,15" href="javascript:press(11)">
+<area shape="rect" alt="Reset" coords="405,130,450,150" href="javascript:settings();">
+</map>
+</div>
+
+<div id="settings" style="left: 463px; display: none;">
+<h1>Enigma Settings</h1>
+<p>To set up the Enigma machine, you must select the three rotors (from a set of eight) and reflector to be used, and then choose the starting positions for each rotor.</p>
+<table>
+<tbody><tr><td colspan="2"><b>Rotors Used</b></td><td colspan="2"><b>Rotor Positions</b></td></tr>
+<tr>
+<td>1st position:</td>
+<td><select id="rotor_one" onchange="check_rotors();">
+<option value="1" selected=""> One
+</option><option value="2"> Two
+</option><option value="3"> Three
+</option><option value="4"> Four
+</option><option value="5"> Five
+</option><option value="6"> Six
+</option><option value="7"> Seven
+</option><option value="8"> Eight
+</option></select></td>
+<td>1st rotor:</td>
+<td><select id="position1">
+<option value="1" selected=""> A
+</option><option value="2"> B
+</option><option value="3"> C
+</option><option value="4"> D
+</option><option value="5"> E
+</option><option value="6"> F
+</option><option value="7"> G
+</option><option value="8"> H
+</option><option value="9"> I
+</option><option value="10"> J
+</option><option value="11"> K
+</option><option value="12"> L
+</option><option value="13"> M
+</option><option value="14"> N
+</option><option value="15"> O
+</option><option value="16"> P
+</option><option value="17"> Q
+</option><option value="18"> R
+</option><option value="19"> S
+</option><option value="20"> T
+</option><option value="21"> U
+</option><option value="22"> V
+</option><option value="23"> W
+</option><option value="24"> X
+</option><option value="25"> Y
+</option><option value="26"> Z
+</option></select></td>
+</tr>
+<tr>
+<td>2nd position:</td>
+<td><select id="rotor_two" onchange="check_rotors();">
+<option value="1"> One
+</option><option value="2" selected=""> Two
+</option><option value="3"> Three
+</option><option value="4"> Four
+</option><option value="5"> Five
+</option><option value="6"> Six
+</option><option value="7"> Seven
+</option><option value="8"> Eight
+</option></select></td>
+<td>2nd rotor:</td>
+<td><select id="position2">
+<option value="1" selected=""> A
+</option><option value="2"> B
+</option><option value="3"> C
+</option><option value="4"> D
+</option><option value="5"> E
+</option><option value="6"> F
+</option><option value="7"> G
+</option><option value="8"> H
+</option><option value="9"> I
+</option><option value="10"> J
+</option><option value="11"> K
+</option><option value="12"> L
+</option><option value="13"> M
+</option><option value="14"> N
+</option><option value="15"> O
+</option><option value="16"> P
+</option><option value="17"> Q
+</option><option value="18"> R
+</option><option value="19"> S
+</option><option value="20"> T
+</option><option value="21"> U
+</option><option value="22"> V
+</option><option value="23"> W
+</option><option value="24"> X
+</option><option value="25"> Y
+</option><option value="26"> Z
+</option></select></td>
+</tr>
+<tr>
+<td>3rd position:</td>
+<td><select id="rotor_three" onchange="check_rotors();">
+<option value="1"> One
+</option><option value="2"> Two
+</option><option value="3" selected=""> Three
+</option><option value="4"> Four
+</option><option value="5"> Five
+</option><option value="6"> Six
+</option><option value="7"> Seven
+</option><option value="8"> Eight
+</option></select></td>
+<td>3rd rotor:</td>
+<td><select id="position3">
+<option value="1" selected=""> A
+</option><option value="2"> B
+</option><option value="3"> C
+</option><option value="4"> D
+</option><option value="5"> E
+</option><option value="6"> F
+</option><option value="7"> G
+</option><option value="8"> H
+</option><option value="9"> I
+</option><option value="10"> J
+</option><option value="11"> K
+</option><option value="12"> L
+</option><option value="13"> M
+</option><option value="14"> N
+</option><option value="15"> O
+</option><option value="16"> P
+</option><option value="17"> Q
+</option><option value="18"> R
+</option><option value="19"> S
+</option><option value="20"> T
+</option><option value="21"> U
+</option><option value="22"> V
+</option><option value="23"> W
+</option><option value="24"> X
+</option><option value="25"> Y
+</option><option value="26"> Z
+</option></select></td>
+</tr>
+</tbody></table>
+<br>
+Use reflector: 
+<select id="reflector">
+<option value="1"> B
+</option><option value="2"> C
+</option><option value="3"> B Dünn
+</option><option value="4"> C Dünn
+</option></select>
+<br><br>
+<input type="button" value="Continue" onclick="change_settings();">
+</div>
+
+<script type="text/javascript">
+<!--
+	var keyboard = document.querySelectorAll("#enigma img");
+//-->
+</script>
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./index(1).html"></iframe></div></div><div class="ginger-module-correctionBubble-onboarding"><div class="ginger-module-correctionBubble-onboarding-bubble ginger-module-correctionBubble-onboarding-top">To approve a single suggestion, mouse over it and click "✔"</div><div class="ginger-module-correctionBubble-onboarding-bubble ginger-module-correctionBubble-onboarding-bottom">Click the bubble to approve all of its suggestions.</div></div></body></html>

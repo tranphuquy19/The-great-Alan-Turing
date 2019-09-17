@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- saved from url=(0078)http://192.168.1.5/mod/resource/cryptolab/public-key-crypto-js-master/rsa.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Xây dựng hệ mật RSA</title>
+
+    <link href="./bootstrap.css" rel="stylesheet">
+
+    <script src="./angular.js"></script>
+
+    <script src="./global.js"></script>
+    <script src="./app.js"></script>
+    <script src="./ExtendedEuclid.js"></script>
+    <script src="./PowerModulo.js"></script>
+    <script src="./RSAController.js"></script>
+
+</head>
+<body ng-app="public-key-crypto-js" ng-controller="RSAController" class="container ng-scope">
+
+<h2>Mã hóa và giải mã RSA</h2>
+<form class="row ng-pristine ng-valid">
+    <div class="col-md-8 col-sm-10 col-xs-12">
+
+      <div class="form-group form-group-sm">
+            <label for="p">Nhập số nguyên tố p = </label>
+            <input name="text" type="text" class="form-control ng-pristine ng-untouched ng-valid" id="p" ng-model="p" placeholder="p = ?">
+        </div>
+        <div class="form-group form-group-sm">
+            <label for="q">Nhập số nguyên tố q
+            = </label>
+            <input ng-model="q" id="q" type="text" placeholder="q = ?" class="form-control ng-pristine ng-untouched ng-valid">
+      </div>
+        <div class="form-group form-group-sm">
+            <label for="e">Nhập giá trị e = </label>
+            <input ng-model="e" id="e" type="text" placeholder="e = ?" class="form-control ng-pristine ng-untouched ng-valid">
+      </div>
+		 <div class="form-group form-group-sm">
+            <label for="x">Nhập giá trị văn bản gốc x = </label>
+            <input ng-model="x" id="x" type="text" placeholder="x = ?" class="form-control ng-pristine ng-untouched ng-valid">
+        </div>
+    </div>
+</form>
+
+<label for="x" class="ng-binding">
+    Xây dụng RSA: p = ?, q = ?, e = ?
+</label>
+
+<!-- ngIf: p * q > 0 -->
+
+<hr>
+
+<!-- ngIf: ky -->
+
+<p><a href="javascript:void(0)" ng-click="ky = !ky">Ký văn bản và phụ lục ?</a></p>
+
+
+
+</body></html>

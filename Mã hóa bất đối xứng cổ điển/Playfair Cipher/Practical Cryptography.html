@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)http://192.168.1.5/mod/resource/cryptolab/Playfair%20Cipher.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Practical Cryptography</title>
+        
+        <link href="http://practicalcryptography.com/static/core/img/favicon.png" rel="icon" type="image/png">
+
+        
+        <link rel="stylesheet" href="./Practical Cryptography_files/style.css">
+        <link rel="stylesheet" href="./Practical Cryptography_files/style(1).css">
+        <link rel="stylesheet" href="./Practical Cryptography_files/prototip.css">
+        
+
+        
+        <script src="./Practical Cryptography_files/prototype.js.download" type="text/javascript"></script>
+        <script src="./Practical Cryptography_files/prototip.js.download" type="text/javascript"></script>
+        <!--[if IE]>
+        <script src="/static/core/js/excanvas.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="./Practical Cryptography_files/flotr-0.2.0-alpha.js.download" type="text/javascript"></script>
+        <!--[if lt IE 8]>
+        <script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js" type="text/javascript"></script>
+        <![endif]-->
+        
+    <script type="text/javascript" async="" src="./Practical Cryptography_files/embed.js.download"></script><link rel="preload" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.04dd90af7bc65bdd97911fd885cc83a9.css"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.e9b4803ecd9f11a1b0b249822211345c.js"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.86cf813e6fb8f13e8ca67e44da312a70.js"><link rel="preload" as="script" href="https://disqus.com/next/config.js"><script src="./Practical Cryptography_files/alfalfa.4a5fcca1fe50a757044dfd331b660625.js.download" async="" charset="UTF-8"></script><link rel="preload" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.04dd90af7bc65bdd97911fd885cc83a9.css"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.e9b4803ecd9f11a1b0b249822211345c.js"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.86cf813e6fb8f13e8ca67e44da312a70.js"><link rel="preload" as="script" href="https://disqus.com/next/config.js"></head>
+
+    <body id="ciphers">
+    <div id="breadcrumb-wrapper"></div>
+
+        <div id="content-wrapper">
+            <div id="content">
+                
+              <div id="main-content" class="column">
+                    
+
+    <h1>Playfair Cipher</h1>
+    
+<script type="text/javascript">
+function Encrypt() {
+    plaintext = document.getElementById("p").value.toLowerCase().replace(/[^a-z]/g, "").replace(/[j]/g, "i");  
+    keysquare = document.getElementById("keysquare").value.toLowerCase().replace(/[^a-z]/g, ""); 
+    // do some error checking
+    if(plaintext.length < 1){ alert("please enter some plaintext (letters and numbers only)"); return; }    
+    if(keysquare.length != 25){ alert("keysquare must be 25 characters in length"); return; }
+    while(plaintext.length % 2 != 0) plaintext += "x";
+    ciphertext = "";
+    for(i=0; i<plaintext.length; i+=2){
+        a = plaintext.charAt(i); b = plaintext.charAt(i+1); 
+        if(a == b) b = "x";
+        row1 = parseInt(keysquare.indexOf(a) / 5);
+        col1 = keysquare.indexOf(a) % 5;
+        row2 = parseInt(keysquare.indexOf(b) / 5);
+        col2 = keysquare.indexOf(b) % 5;
+        if(row1 == row2){
+            if(col1 == 4) c = keysquare.charAt(row1*5);
+            else c = keysquare.charAt(row1*5 + col1 + 1);
+            if(col2 == 4) d = keysquare.charAt(row2*5);
+            else d = keysquare.charAt(row2*5 + col2 + 1);
+        }else if(col1 == col2){
+            if(row1 == 4) c = keysquare.charAt(col1);
+            else c = keysquare.charAt((row1+1)*5 + col1);
+            if(row2 == 4) d = keysquare.charAt(col2);
+            else d = keysquare.charAt((row2+1)*5 + col2);
+        }else{
+            c = keysquare.charAt(row1*5 + col2);
+            d = keysquare.charAt(row2*5 + col1);
+        }
+        
+        ciphertext += c + d;
+    }
+    document.getElementById("c").value = ciphertext.toUpperCase();
+}
+
+function Decrypt(f) {
+    ciphertext = document.getElementById("c").value.toLowerCase().replace(/[^a-z0-9]/g, "").replace(/[j]/g, "i");  ;  
+    keysquare = document.getElementById("keysquare").value.toLowerCase().replace(/[^a-z]/g, ""); 
+    if(ciphertext.length < 1){ alert("please enter some ciphertext (letters only)"); return; }   
+    if(ciphertext.length % 2 != 0){ alert("ciphertext length must be even."); return; }    
+    if(keysquare.length != 25){ alert("keysquare must be 25 characters in length"); return; }
+
+    plaintext = "";
+    for(i=0; i<ciphertext.length; i+=2){
+        a = ciphertext.charAt(i); b = ciphertext.charAt(i+1); 
+        row1 = parseInt(keysquare.indexOf(a) / 5);
+        col1 = keysquare.indexOf(a) % 5;
+        row2 = parseInt(keysquare.indexOf(b) / 5);
+        col2 = keysquare.indexOf(b) % 5;
+        if(row1 == row2){
+            if(col1 == 0) c = keysquare.charAt(row1*5 + 4);
+            else c = keysquare.charAt(row1*5 + col1 - 1);
+            if(col2 == 0) d = keysquare.charAt(row2*5 + 4);
+            else d = keysquare.charAt(row2*5 + col2 - 1);
+        }else if(col1 == col2){
+            if(row1 == 0) c = keysquare.charAt(20 + col1);
+            else c = keysquare.charAt((row1-1)*5 + col1);
+            if(row2 == 0) d = keysquare.charAt(20 + col2);
+            else d = keysquare.charAt((row2-1)*5 + col2);
+        }else{
+            c = keysquare.charAt(row1*5 + col2);
+            d = keysquare.charAt(row2*5 + col1);
+        }
+        plaintext += c + d;
+    }
+    document.getElementById("p").value = plaintext.toUpperCase();
+}
+
+function GenRandKey(){
+    var keychars = "abcdefghiklmnopqrstuvwxyz";
+    var chars = keychars.split("");
+    ret=""; lim = chars.length
+    for(i=0; i<lim; i++){
+        index = Math.floor(chars.length*Math.random());
+        ret += chars[index];
+        chars.splice(index,1);
+    } 
+    document.getElementById("keysquare").value = ret;
+}
+</script>
+ 
+<h2>Introduction </h2> 
+<p>The Playfair cipher was the first practical digraph substitution cipher. The scheme was invented in 1854 by Charles Wheatstone, but was named after Lord Playfair who promoted the use of the cipher. The technique encrypts pairs of letters (digraphs), instead of single letters as in the simple substitution cipher. The Playfair is significantly harder to break since the frequency analysis used for simple substitution ciphers does not work with it. Frequency analysis can still be undertaken, but on the 25*25=625 possible digraphs rather than the 25 possible monographs. Frequency analysis thus requires much more ciphertext in order to work. For a tutorial on breaking Playfair with a simulated annealing algorithm, see <a href="http://practicalcryptography.com/cryptanalysis/stochastic-searching/cryptanalysis-playfair/">Cryptanalysis of the Playfair Cipher</a>.</p>
+ 
+<p>It was used for tactical purposes by British forces in the Second Boer War and in World War I and for the same purpose by the Australians during World War II. This was because Playfair is reasonably fast to use and requires no special equipment. A typical scenario for Playfair use would be to protect important but non-critical secrets during actual combat. By the time the enemy cryptanalysts could break the message the information was useless to them <a href="http://practicalcryptography.com/ciphers/playfair-cipher/#references">[1]</a>.</p>
+
+<p>From Kahn's 'The CodeBreakers':</p>
+
+<blockquote>
+    <p>Perhaps the most famous cipher of 1943 involved the future president of the U.S., J. F. Kennedy, Jr. On 2 August 1943, Australian Coastwatcher Lieutenant Arthur Reginald Evans of the Royal Australian Naval Volunteer Reserve saw a pinpoint of flame on the dark waters of Blackett Strait from his jungle ridge on Kolombangara Island, one of the Solomons. He did not know that the Japanese destroyer Amagiri had rammed and sliced in half an American patrol boat PT-109, under the command of Lieutenant John F. Kennedy, United States Naval Reserve. Evans received the following message at 0930 on the morning of the 2 of August 1943:</p>
+    <pre>KXJEY  UREBE  ZWEHE  WRYTU  HEYFS 
+KREHE  GOYFI  WTTTU  OLKSY  CAJPO 
+BOTEI  ZONTX  BYBWT  GONEY  CUZWR 
+GDSON  SXBOU  YWRHE  BAAHY  USEDQ
+    </pre>
+    
+    <p>The translation:</p>
+    
+    <pre>PT BOAT ONE OWE NINE LOST IN ACTION IN BLACKETT 
+STRAIT TWO MILES SW MERESU COVE X CREW OF TWELVE 
+X REQUEST ANY INFORMATION.
+    </pre>
+ 
+    <p>The coastwatchers regularly used the Playfair system. Evans deciphered it with the key ROYAL NEW ZEALAND NAVY [note that this is key square ROYALNEWZDVBCFGHIKMPQSTUX] and learned of Kennedy's fate. [...] About ten hours later, at 10:00 p.m. Kennedy and his crew was rescued.</p>
+</blockquote> 
+
+<p>Note the ciphertext above has some errors in it, see <a href="http://practicalcryptography.com/ciphers/classical-era/playfair/#comment-1257176319">this comment</a> for a more correct version.</p>
+
+<h2>The Algorithm </h2> 
+<p>The 'key' for a playfair cipher is generally a word, for the sake of example we will choose 'monarchy'. This is then used to generate a 'key square', e.g.</p>
+
+<pre>m o n a r
+c h y b d
+e f g i k
+l p q s t
+u v w x z
+</pre>
+
+<p>Any sequence of 25 letters can be used as a key, so long as all letters are in it and there are no repeats. Note that there is no 'j', it is combined with 'i'. We now apply the encryption rules to encrypt the plaintext.</p>
+ 
+<ol> 
+    <li>Remove any punctuation or characters that are not present in the key square (this may mean spelling out numbers, punctuation etc.).</li> 
+    <li>Identify any double letters in the plaintext and replace the second occurence with an 'x' e.g. 'hammer' -&gt; 'hamxer'.</li> 
+    <li>If the plaintext has an odd number of characters, append an 'x' to the end to make it even.</li> 
+    <li>Break the plaintext into pairs of letters, e.g. 'hamxer' -&gt; 'ha mx er'</li> 
+    <li>The algorithm now works on each of the letter pairs.</li> 
+    <li>Locate the letters in the key square, (the examples given are using the key square above)
+        <ol style="list-style-type: lower-alpha;"> 
+           <li>If the letters are in different rows and columns, replace the pair with the letters on the same row respectively but at the other pair of corners of the rectangle defined by the original pair. The order is important – the first encrypted letter of the pair is the one that lies on the same row as the first plaintext letter. 'ha' -&gt; 'bo', 'es' -&gt; 'il'</li>
+           <li>If the letters appear on the same row of the table, replace them with the letters to their immediate right respectively (wrapping around to the left side of the row if a letter in the original pair was on the right side of the row). 'ma' -&gt; 'or', 'lp' -&gt; 'pq'</li>
+           <li>If the letters appear on the same column of the table, replace them with the letters immediately below respectively (wrapping around to the top side of the column if a letter in the original pair was on the bottom side of the column). 'rk' -&gt; 'dt', 'pv' -&gt; 'vo'</li>
+        </ol>
+    </li>
+</ol>
+
+<p>Clarification with pictures - Assume one wants to encrypt the digraph OR. There are three general cases: <a href="http://practicalcryptography.com/ciphers/playfair-cipher/#references">[1]</a></p>
+
+<ol>
+    <li>
+<pre>m * * a *
+* * * * *
+* * * * *
+l * * s *
+* * * * *</pre>
+        <span>Hence, al -&gt; ms</span>
+    </li>
+    <li>
+<pre>* * * * *
+* h y b d
+* * * * *
+* * * * *
+* * * * *</pre>
+        <span>Hence, hb -&gt; yd</span>
+    </li>
+    <li>
+<pre>* * n * *
+* * y * *
+* * * * *
+* * q * *
+* * w * *</pre>
+        <span>Hence, nq -&gt; yw</span>
+    </li>
+</ol>
+ 
+<p>An example encryption, "we are discovered, save yourself" using the key square shown at the beginning of this section:</p>
+
+<pre>plaintext:  wearediscoveredsaveyourselfx
+ciphertext: ugrmkcsxhmufmkbtoxgcmvatluiv
+</pre> 
+
+<h2>JavaScript Example of the Playfair Cipher </h2> 
+Plaintext<br>
+<textarea id="p" name="p" rows="4" cols="50">we are discovered save yourself</textarea>
+<p>keysquare =
+<input id="keysquare" name="keysquare" size="25" maxchars="25" value="monarchybdefgiklpqstuvwxz" type="text"> 
+<input id="genKey" name="genKey" value="Generate Random Key" onclick="GenRandKey()" type="button"> 
+</p> 
+<p><input name="btnEn" value="v Encrypt v" onclick="Encrypt()" type="button"> 
+<input name="btnDe" value="^ Decrypt ^" onclick="Decrypt()" type="button"></p> 
+<p>Ciphertext<br> 
+<textarea id="c" name="c" rows="4" cols="50"></textarea> </p> 
+
+ <h2>Cryptanalysis </h2>
+ 
+
+<p>For a tutorial on breaking Playfair with a simulated annealing algorithm, see <a href="http://practicalcryptography.com/cryptanalysis/stochastic-searching/cryptanalysis-playfair/">Cryptanalysis of the Playfair Cipher</a>.</p>
+
+<p>Obtaining the key is relatively straightforward if both plaintext and ciphertext are known, however we want to find the key without knowing the plaintext. Guessing some of the words using knowledge of where the message came from, when it came from, etc. can be a huge help in reconstructing the key square. It should be recognized that guessing some of the plaintext and using that to reconstruct the keysquare is by far the easiest way to crack this cipher.</p>
+
+<p>Cryptanalysis of the playfair cipher is much more difficult than normal simple substitution ciphers, because digraphs (pairs of letters) are being substituted instead of monographs (single letters). If we use frequency analysis of english digraphs, we can use this information in the same way as we used the monograph frequencies, however, there are ~600 digraphs and only 26 monographs. We need far more ciphertext for the digraphic system to make reliable key choices compared to the monographic system.</p>
+
+<p>When cryptanalysing by hand, the following trick can be used. A Playfair digraph and its reverse (e.g. AB and BA) will decrypt to the same letter pattern in the plaintext (e.g. RE and ER). In English, there are many words which contain these reversed digraphs such as REceivER and DEpartED. Identifying nearby reversed digraphs in the ciphertext and matching the pattern to a list of known plaintext words containing the pattern is an easy way to generate possible plaintext strings with which to begin constructing the key. A good tutorial on reconstructing the key for a Playfair cipher can be found in chapter 7, "<a href="http://www.umich.edu/~umich/fm-34-40-2/ch7.pdf">Solution to Polygraphic Substitution Systems</a>," of Field Manual 34-40-2, produced by the United States Army.</p> 
+
+<p>When trying to decide which algorithm was used to encrypt some ciphertext, it is useful to know that Playfair will never contain a double-letter digraph, e.g. EE. If there are no double letter digraphs in the ciphertext and the length of the message is long enough to make this statistically significant, it is very likely that the
+method of encryption is Playfair. Other things that will be true about the ciphertext message:</p>
+
+<ol style="list-style-type: disc; width: 70%; text-align: left;"> 
+    <li>The cipher message contains an even number of letters.</li> 
+    <li>A frequency count will show no more than 25 letters (with no letter J).</li> 
+    <li>If long repeats occur, they will be separated by an even number of characters. Repeated sequences will usually be an even number of characters.</li> 
+</ol> 
+
+<p>When Solving by computer, an easy way of finding a key is to start with a random square of letters. Minor changes are then introduced (i.e. swapping letters in the key) to see if the candidate plaintext is more like standard plaintext than before the change (e.g. using markov models, or trigram frequency counts). If the new square is deemed to be an improvement (plaintext has higher likelyhood), then it is adopted and then further mutated to find an even better candidate. Eventually, the plaintext or something very close to it is found by chosing the key that provides a plaintext with the highest likelyhood.</p>
+ 
+<h2>References <a href="http://practicalcryptography.com/ciphers/playfair-cipher/#references" id="references" class="anchor" title="Link to this section">§</a></h2> 
+<ul>
+    <li>[1] <a href="http://en.wikipedia.org/wiki/Playfair_cipher">Wikipedia</a> has a good description of the encryption/decryption process, history and cryptanalysis of this algorithm</li>
+    <li><span style="text-decoration: underline;">Basic Cryptanalysis</span>, FM 34-40-2, FIELD MANUAL,&nbsp;DEPARTMENT OF THE ARMY <a href="http://www.umich.edu/~umich/fm-34-40-2/">http://www.umich.edu/~umich/fm-34-40-2/</a></li>
+    <li>A fairly decent look at some of the history of playfair, along with good cryptanalysis tips:<br>
+        Lecture 3 "Cryptanalysis of the Classical Ciphers", by Dr. Alex Biryukov.<br> 
+        <a href="http://www.wisdom.weizmann.ac.il/~albi/cryptanalysis/lect3.htm">http://www.wisdom.weizmann.ac.il/~albi/cryptanalysis/lect3.htm</a></li>
+    <li>Simon Singh's 'The Code Book' is an excellent introduction to ciphers and codes, and includes a section on playfair ciphers.<br>
+        Singh, Simon (2000). <span style="text-decoration: underline;">The Code Book: The Science of Secrecy from Ancient Egypt to Quantum Cryptography</span>. ISBN 0-385-49532-3.</li>
+</ul>
+</div>
+                <div class="clear"></div>
+                
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script><script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script><iframe style="display: none;" src="./Practical Cryptography_files/saved_resource.html"></iframe><script src="./Practical Cryptography_files/ga.js.download" type="text/javascript"></script>
+
+        <script type="text/javascript">
+        // Analytics
+        try {
+            var pageTracker = _gat._getTracker("UA-7244051-1");
+            pageTracker._trackPageview();
+        } catch(err) {}
+
+        
+        </script>
+    
+
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./Practical Cryptography_files/index.html"></iframe></div></div>
+<iframe style="display: none;" src="./Practical Cryptography_files/saved_resource(1).html"></iframe><div class="adsbox">&nbsp;</div></body></html>

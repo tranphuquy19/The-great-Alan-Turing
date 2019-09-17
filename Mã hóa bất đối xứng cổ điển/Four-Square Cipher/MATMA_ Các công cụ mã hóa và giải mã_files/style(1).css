@@ -1,0 +1,75 @@
+div.amazon-books {
+    border-top: 1px solid #CCC;
+
+    text-align: center;
+    vertical-align: top;
+}
+
+div.amazon-books h2,
+div.amazon-books h2 + p {
+    text-align: left;
+}
+
+/******************************************************************************/
+
+div.amazon-book {
+    display: inline-block;
+    *float: left;
+    margin: 1em 0;
+    padding: 0 5px;
+    text-align: center;
+    vertical-align: top;
+    width: 215px;
+}
+
+div.amazon-book a img {
+    border: 5px solid #DDD;
+}
+
+div.amazon-book a:hover img {
+    border-color: #7db7d5;
+}
+
+div.amazon-book > span {
+    display: block;
+    margin-top: 0.5em;
+}
+
+
+div.amazon-book span.title {
+    font-weight: bold;
+}
+
+div.amazon-book span.isbn {
+    font-size: 0.8em;
+}
+
+div.amazon-book span.caption {
+    font-size: 1em;
+    color: #666;
+}
+
+div.amazon-book span.caption:before {
+    content: "“";
+}
+
+div.amazon-book span.caption:after {
+    content: "”";
+}
+
+div.amazon-book img.tracker {
+    display: none;
+}
+
+div.amazon-book a.buy {
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: bold;
+    border: 1px solid #DDD;
+    padding: 2px 5px;
+}
+
+div.amazon-book a.buy:hover {
+    border-color: #7db7d5;
+    text-decoration: none;
+}

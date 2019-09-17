@@ -1,0 +1,308 @@
+
+<!-- saved from url=(0062)http://192.168.1.5/mod/resource/cryptolab/SHA-1%20Example.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>My SHA-1 Example</title>
+<script language="JavaScript">
+// accumulate values to put into text area
+var accumulated_output_info;
+
+// add a labeled value to the text area
+function accumulate_output( str )
+{
+   accumulated_output_info = accumulated_output_info + str + "\n";
+}
+
+// convert a 32-bit value to a 8-char hex string
+function cvt_hex( val )
+{
+   var str="";
+   var i;
+   var v;
+
+   for( i=7; i>=0; i-- )
+   {
+      v = (val>>>(i*4))&0x0f;
+      str += v.toString(16);
+   }
+   return str;
+}
+
+// add a bit string to the output, inserting spaces as designated
+function accumulate_val( label, val )
+{
+   accumulated_output_info += label + cvt_hex(val) + "\n";
+}
+
+// return a hex value LSB first
+//function lsb_hex( val )
+//{
+//   var str="";
+//   var i;
+//   var vh;
+//   var vl;
+//
+//   for( i=0; i<=6; i+=2 )
+//   {
+//      vh = (val>>>(i*4+4))&0x0f;
+//      vl = (val>>>(i*4))&0x0f;
+//      str += vh.toString(16) + vl.toString(16);
+//   }
+//   return str;
+//}
+
+// rotate left circular
+//function rotate_left( n, s )
+//{
+//   var t4 = ( n<<s ) | (n>>>(32-s));
+//   accumulate_output( "  "+cvt_hex(n)+"<<<"+s+"="+cvt_hex(t4) );
+//   return t4;
+//}
+
+// rotate right circular
+function rotate_right( n, s )
+{
+   var t4 = ( n>>>s ) | (n<<(32-s));
+//   accumulate_output( "  "+cvt_hex(n)+">>>"+s+"="+cvt_hex(t4) );
+   return t4;
+}
+
+// calculate the hash
+function do_sha256( do_sha224 )
+{
+   var blockstart;			// which block of words from the dataare we using now?
+   var i, j;
+   var H0, H1, H2, H3, H4, H5, H6, H7;
+   
+   var K = new Array( 0x0428a2f98, 0x071374491, 0x0b5c0fbcf, 0x0e9b5dba5, 0x03956c25b, 0x059f111f1, 0x0923f82a4, 0x0ab1c5ed5,
+      0x0d807aa98, 0x012835b01, 0x0243185be, 0x0550c7dc3, 0x072be5d74, 0x080deb1fe, 0x09bdc06a7, 0x0c19bf174,
+      0x0e49b69c1, 0x0efbe4786, 0x00fc19dc6, 0x0240ca1cc, 0x02de92c6f, 0x04a7484aa, 0x05cb0a9dc, 0x076f988da,
+      0x0983e5152, 0x0a831c66d, 0x0b00327c8, 0x0bf597fc7, 0x0c6e00bf3, 0x0d5a79147, 0x006ca6351, 0x014292967,
+      0x027b70a85, 0x02e1b2138, 0x04d2c6dfc, 0x053380d13, 0x0650a7354, 0x0766a0abb, 0x081c2c92e, 0x092722c85,
+      0x0a2bfe8a1, 0x0a81a664b, 0x0c24b8b70, 0x0c76c51a3, 0x0d192e819, 0x0d6990624, 0x0f40e3585, 0x0106aa070,
+      0x019a4c116, 0x01e376c08, 0x02748774c, 0x034b0bcb5, 0x0391c0cb3, 0x04ed8aa4a, 0x05b9cca4f, 0x0682e6ff3,
+      0x0748f82ee, 0x078a5636f, 0x084c87814, 0x08cc70208, 0x090befffa, 0x0a4506ceb, 0x0bef9a3f7, 0x0c67178f2 );
+
+   if ( !do_sha224 )
+   {
+      // Initialize the constantants for SHA-256
+      H0 = 0x6a09e667;
+      H1 = 0xbb67ae85;
+      H2 = 0x3c6ef372;
+      H3 = 0xa54ff53a;
+      H4 = 0x510e527f;
+      H5 = 0x9b05688c;
+      H6 = 0x1f83d9ab;
+      H7 = 0x5be0cd19;
+   }
+   else
+   {
+      // Initialize the constantants for SHA-224
+      H0 = 0xc1059ed8;
+      H1 = 0x367cd507;
+      H2 = 0x3070dd17;
+      H3 = 0xf70e5939;
+      H4 = 0xffc00b31;
+      H5 = 0x68581511;
+      H6 = 0x64f98fa7;
+      H7 = 0xbefa4fa4;
+   }
+
+   var A, B, C, D, E, F, G, H;               // working variables
+   var S0, S1, MAJ, T2, CH, T1;              // temporary variables
+   var W = new Array(64);
+
+   // initialize detail output string
+   accumulated_output_info="";
+
+   // get message to hash
+   var msg = document.stuff.inmsg.value;
+
+   // note current length
+   var msg_len = msg.length;
+
+   // convert to a 32-bit word array
+   var word_array = new Array();
+   for( i=0; i<msg_len-3; i+=4 )
+   {
+      // convert 4 bytes to a word
+      j = msg.charCodeAt(i)<<24 | msg.charCodeAt(i+1)<<16 |
+		msg.charCodeAt(i+2)<<8 | msg.charCodeAt(i+3);
+      word_array.push( j );
+      accumulate_val( msg.substr(i, 4)+": ", j );
+   }
+
+   // handle final bits, add beginning of padding: 1 bit, then 0 bits
+   switch( msg_len % 4 )
+   {
+      case 0:
+         // text length was a multiple of 4 bytes, start padding
+         i = 0x080000000;				// 4 bytes padding
+         break;
+
+      case 1:
+         // one byte of text left
+         i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;	// 3 bytes padding
+         break;
+
+      case 2:
+         // two bytes of text left
+         i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16
+		| 0x08000;				// 2 bytes padding
+         break;
+
+      case 3:
+         // three bytes of text left
+         i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16
+		| msg.charCodeAt(msg_len-1)<<8	| 0x80;	// 1 byte padding
+         break;
+
+      default:
+         window.alert("Something went weird in the switch!");
+         return;
+   }
+   accumulate_output( "length="+msg_len );
+   accumulate_val( "length%4="+(msg_len%4)+", padding=", i );
+
+   // handle the end of the text and beginning of the padding
+   word_array.push( i );
+
+   // pad to 448 bits (mod 512 bits) = 14 words (mod 16 words)
+   while( (word_array.length % 16) != 14 )
+      word_array.push( 0 );
+
+   // add 64-bit message length (in bits)
+   word_array.push( msg_len>>>29 );
+   word_array.push( (msg_len<<3)&0x0ffffffff );
+
+   for( i=0; i<word_array.length; i++ )
+      accumulate_output( "msg[" + i + "]=" + cvt_hex( word_array[i] ) );  
+
+   // Process each 16-word block.
+   for ( blockstart=0; blockstart<word_array.length; blockstart+=16 )
+   {
+      accumulate_output( "Starting block at word "+blockstart );
+
+      // create entries in W array
+      for( i=0; i<16; i++ )
+         W[i] = word_array[blockstart+i];
+      for( i=16; i<64; i++ )
+      {
+         S0 = rotate_right( W[i-15], 7 ) ^ rotate_right( W[i-15], 18 ) ^
+               (W[i-15] >>> 3 );
+         S1 = rotate_right( W[i-2], 17 ) ^ rotate_right( W[i-2], 19 ) ^
+               ( W[i-2] >>> 10 );
+         W[i] = ( W[i-16] + S0 + W[i-7] + S1 ) & 0x0ffffffff;
+         
+//         accumulate_output( "S0=" + cvt_hex(S0) + " S1="+cvt_hex(S1) +
+//               " W["+i+"]=" + cvt_hex(W[i]) );
+      }
+
+      for( i=0; i<64; i+=4 )
+         // display 4 W[] per line
+         accumulate_output( "W["+(i)+"]="+cvt_hex( W[i] ) +
+               ", W["+(i+1)+"]="+cvt_hex( W[i+1] ) +
+               ", W["+(i+2)+"]="+cvt_hex( W[i+2] ) +
+               ", W["+(i+3)+"]="+cvt_hex( W[i+3] ) );
+ 
+      // copy state
+      A = H0;
+      B = H1;
+      C = H2;
+      D = H3;
+      E = H4;
+      F = H5;
+      G = H6;
+      H = H7;
+
+      // note start of round values
+      accumulate_output("A=" + cvt_hex(A) + " B=" + cvt_hex(B) + " C=" + cvt_hex(C) +
+         " D=" + cvt_hex(D) + " E=" + cvt_hex(E) + " F=" + cvt_hex(F) +
+         " G=" + cvt_hex(G) + " H=" + cvt_hex(H) );
+
+      // update state variables
+      for( i= 0; i<=63; i++ )
+      {
+         S0 = rotate_right( A, 2 ) ^ rotate_right( A, 13 ) ^ rotate_right( A, 22 );
+         MAJ = ( A & B ) ^ ( A & C ) ^ ( B & C );
+         T2 = ( S0 + MAJ ) & 0x0ffffffff;
+         S1 = rotate_right( E, 6 ) ^ rotate_right( E, 11 ) ^ rotate_right( E, 25 );
+         CH = ( E & F ) ^ ( (~E) & G );
+         T1 = (H + S1 + CH + K[i] + W[i]) & 0x0ffffffff;
+
+         accumulate_output( "S0=" + cvt_hex(S0) + " MAJ=" + cvt_hex(MAJ) +
+               " T2=" + cvt_hex(T2) + " S1=" + cvt_hex(S1) +
+               " CH=" + cvt_hex(CH) + " T1=" + cvt_hex(T1) );
+               
+         // update state
+         H = G;
+         G = F;
+         F = E;
+         E = ( D + T1 ) & 0x0ffffffff;
+         D = C;
+         C = B;
+         B = A;
+         A = ( T1 + T2 ) & 0x0ffffffff;
+         // note new round values
+         accumulate_output( "i=" + i + " A=" + cvt_hex(A) + " B=" + cvt_hex(B) + " C=" + cvt_hex(C) +
+            " D=" + cvt_hex(D) + " E=" + cvt_hex(E) + " F=" + cvt_hex(F) +
+            " G=" + cvt_hex(G) + " H=" + cvt_hex(H) );
+     }
+
+ 
+      H0 = (H0 + A) & 0x0ffffffff;
+      H1 = (H1 + B) & 0x0ffffffff;
+      H2 = (H2 + C) & 0x0ffffffff;
+      H3 = (H3 + D) & 0x0ffffffff;
+      H4 = (H4 + E) & 0x0ffffffff;
+      H5 = (H5 + F) & 0x0ffffffff;
+      H6 = (H6 + G) & 0x0ffffffff;
+      H7 = (H7 + H) & 0x0ffffffff;
+
+      accumulate_output( "H0=" + cvt_hex(H0) + " H1=" + cvt_hex(H1) + " H2=" + cvt_hex(H2)
+		+ " H3=" + cvt_hex(H3) + " H4=" + cvt_hex(H4) + " H5=" + cvt_hex(H5)
+      + " H6=" + cvt_hex(H6) + " H7=" + cvt_hex(H7) );
+   } // of loop on i
+
+   // process output
+   if ( !do_sha224 )
+   {
+      // SHA-256
+      document.stuff.outhash.value = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2)
+         + cvt_hex(H3) + cvt_hex(H4) + cvt_hex(H5) + cvt_hex(H6) + cvt_hex(H7);
+   }
+   else
+   {
+      // SHA-224
+      document.stuff.outhash.value = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2)
+         + cvt_hex(H3) + cvt_hex(H4) + cvt_hex(H5) + cvt_hex(H6);
+   }
+		
+   document.stuff.details.value = accumulated_output_info;
+}
+</script>
+
+
+</head>
+<body>
+
+<form name="stuff"> <h2>SHA-2 hash function</h2>
+Enter your message here:<br>
+<textarea name="inmsg" id="inmsg" rows="5" cols="90"></textarea>
+<p>
+<input type="button" value="Calculate SHA-256" onclick="do_sha256(false);">
+<input type="button" value="Calculate SHA-224" onclick="do_sha256(true);">
+</p><hr>
+SHA-2 hash:<br>
+<input type="text" name="outhash" size="90">
+<p>
+Details:<br>
+<textarea name="details" id="details" rows="22" cols="100"></textarea>
+</p></form>
+<p>
+</p><hr>
+<p>
+
+
+
+<!-- This document saved from http://people.eku.edu/styere/Encrypt/JS-SHA256.html -->
+</p></body></html>

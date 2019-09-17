@@ -1,0 +1,213 @@
+
+<!-- saved from url=(0081)http://192.168.1.5/mod/resource/cryptolab/Elliptic%20Curve%20Signature-GF(p).html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Elliptic Curve Encryption - GF(p)</title>
+<script language="JavaScript" src="./ECC.js.download"></script>
+<script language="JavaScript">
+// now try a digital signature
+function do_sign()
+{
+   // generate GF(q) so we have inverse
+   var qtemp = new GFp( get_n() );
+
+   accumulated_output_info = "";
+
+   // (use A_rand as the private key, so A_msg is the public key)
+   var hash = parseInt(document.ECC.hash.value) % get_n();
+   accumulated_output_info += "hash=" + hash + "\n";
+
+   var DSA_k;
+   var DSA_r;
+   var DSA_s;
+   var Temp_Pt;
+   // generate a valid signature
+   while( true )
+   {
+      // generate a random #
+      DSA_k = gen_rand( get_n() );
+      accumulated_output_info += "Trying k=" + DSA_k +  "\n";
+      
+      // calculate (x1,y1)=k*G, then r=x1 mod n
+      var cur_G = get_G();
+      Temp_Pt = cur_G.smul( DSA_k );
+      DSA_r = Temp_Pt.x % get_n();
+      accumulated_output_info += "k*G = " + Temp_Pt.format() + ", r=" + DSA_r +  "\n";
+      
+      // if this is 0, we need to try again
+      if ( DSA_r == 0 )
+      {
+         accumulated_output_info += "r is 0, trying again\n";
+         continue;
+      }
+   
+      // calculate s = k^-1 (e + r*d) (mod n)
+      var k_inv = qtemp.div( 1, DSA_k );
+      accumulated_output_info += "k^-1 = " + k_inv + "\n";
+      var e_rd = qtemp.add( hash, qtemp.mul(DSA_r, get_d() ) );
+      accumulated_output_info += "e + r*d=" + e_rd + "\n";
+      DSA_s = qtemp.mul( k_inv, e_rd  );
+      accumulated_output_info += "s = k^-1 * (e+rd)=" + DSA_s + "\n";
+      
+      // if this is 0, also need to try again
+      if ( DSA_s == 0 )
+      {
+         accumulated_output_info += "s is 0, trying again\n";
+         continue;
+      }
+      // have a valid r, s
+      break;
+   }
+   accumulated_output_info += "Hash= " + hash + ", Signature: r=" + DSA_r + ", s=" + DSA_s +  "\n";
+
+   // output the details
+   document.ECC.sign_r.value = DSA_r;
+   document.ECC.sign_s.value = DSA_s;
+   document.ECC.details.value = accumulated_output_info;
+}
+
+// validate the signature
+function check_sign()
+{
+  // generate GF(q) so we have inverse
+   var qtemp = new GFp( get_n() );
+
+   accumulated_output_info = "";
+
+   // get the hash data from the form
+   var hash = parseInt(document.ECC.hash.value) % get_n();
+   var DSA_r = parseInt( document.ECC.sign_r.value );
+   var DSA_s = parseInt( document.ECC.sign_s.value );
+ 
+   accumulated_output_info += "Verifying signature\nhash e = " + hash +  ", r=" + DSA_r +
+         ", s=" + DSA_s + "\n";
+  
+   // w = s^-1
+   var DSA_w = qtemp.div( 1, DSA_s );
+   accumulated_output_info += "Verifying signature\nw = s^-1 = " + DSA_w +  "\n";
+   
+   // u1 = hash*w (mod n), u2=r*w (mod n)
+   var DSA_u1 = qtemp.mul( hash, DSA_w );
+   accumulated_output_info += "u1 = e*w (mod n) = " + DSA_u1 + "\n";
+   var DSA_u2 = qtemp.mul( DSA_r, DSA_w );
+   accumulated_output_info += "u2 = r*w (mod n) = " + DSA_u2 +  "\n";
+
+   // calculate (x1,y1) = u1*G + u2*Q (Q=public key)
+   accumulated_output_info += "Calculating u1*G\n";
+   var cur_G = get_G();
+   var t1 = cur_G.smul( DSA_u1 );
+   accumulated_output_info += "u1*G = " + DSA_u1+"*G = " + t1.format() + "\n";
+   accumulated_output_info += "Calculating u2*Q\n";
+   var cur_Q = get_Q();
+   var t2 = cur_Q.smul( DSA_u2 );
+   accumulated_output_info += "u2*Q = " + DSA_u2 + "*Q=" + t2.format() + "\n";
+   var Temp_Pt = t1.add( t2 );
+   accumulated_output_info += "(x1,y1)=" + Temp_Pt.format() + "\n";
+   var sig_check = Temp_Pt.x % get_n();
+   accumulated_output_info += "x1 mod n=" + sig_check +  "\n";
+   
+   // check if r = x1 mod n
+   var res_str;
+   if ( DSA_r == sig_check )
+   {
+      res_str = "Valid signature";
+   }
+   else
+   {
+      res_str = "Not a valid signature";
+   }
+
+   // note the result
+   accumulated_output_info += res_str + "\n";
+   document.ECC.details.value = accumulated_output_info;
+   
+   // announce results
+   window.alert( res_str );
+}
+</script>
+<style type="text/css">
+<!--
+.style1 {
+	font-size: 24px;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body>
+<p class="style1">Elliptic curve ElGamal signature.</p>
+<form name="ECC">
+Choose one of the two following elliptic curves:
+<table border="1">
+<tbody><tr>
+<td>
+<input type="radio" name="choose_curve" checked="">Curve over GF(p)<p>
+Given a prime p, the elliptic curves modulo p that we use are
+of the form: <i>y<sup>2</sup> = x<sup>3</sup> + ax + b</i>.
+</p><p>
+The curve and key information used for this page is:<br>
+<script language="JavaScript">
+// display the GF(p) curve
+print_ECC_GFp();
+</script>Public Key: p=71, a=4, b=-6, G=(2,9), Q=(38,63), n=73, h=1<br>Private key: d=7Public Key: p=71, a=4, b=-6, G=(2,9), Q=(38,63), n=73, h=1<br>Private key: d=7
+</p></td>
+<td>
+<input type="radio" name="choose_curve">Curve over GF(2<sup>m</sup>)<p>
+Given a field GF(2<sup>m</sup>) and a irreducable polynomial, the curve is
+of the form: <i>y<sup>2</sup> + xy = x<sup>3</sup> + ax<sup>2</sup> + b</i>.
+</p><p>
+The curve and key information used for this page is:<br>
+<script language="JavaScript">
+// display the GF(2^m) curve
+print_ECC_GF2m();
+</script>Public Key: m=7, generator polynomial=89 (g^7 + g^3 + 1), a=15, b=114, G=(0x1,0x24), Q=(0x13,0x45), n=73, h=2<br>Private key: d=7Public Key: m=7, generator polynomial=89 (g^7 + g^3 + 1), a=15, b=114, G=(0x1,0x24), Q=(0x13,0x45), n=73, h=2<br>Private key: d=7
+</p></td>
+</tr>
+</tbody></table>
+A common use for elliptic curve systems (and public-key systems in general) is to
+sign documents so that others can verify the identity of the author and that the document
+has not been modified.
+
+<p>
+Use the following steps to sign a document:
+</p><ul>
+<li>Calculate <i>e</i> equal to the hash of the document using a secure
+   hash function (such as SHA-1).
+</li><li>Select a random value <i>k</i>
+</li><li>Calculate <i>(x,y) = k*G</i> and then <i>r = x mod n</i>,
+   where <i>G</i> is the generator point for the curve and <i>n</i> is the order for the curve
+</li><li>If <i>r=0</i>, go back and try a different value for <i>k</i>
+</li><li>Calculate <i>s = k<sup>-1</sup>(e + rd)</i> using the private value <i>d</i>
+</li><li>If <i>s=0</i>, go back and try a different value for <i>k</i>
+</li><li>The signature is the pair <i>(r, s)</i>
+</li></ul>
+<p>
+Checking a signature:
+</p><ul>
+<li>Verify that <i>r</i> and <i>s</i> are in the range 1..(n-1).  If not, the
+signature is invalid
+</li><li>Calculate the document hash <i>e</i> using the same algorithm as the signature
+</li><li>Calculate <i>w = s<sup>-1</sup> (</i>mod <i>n)</i>
+</li><li>Calculate <i>U<sub>1</sub> = e*w (</i>mod <i>n)</i> and 
+   <i>U<sub>2</sub> = r*w (</i>mod <i>n)</i>
+</li><li>Calculate <i>(x,y) = U<sub>1</sub> + U<sub>2</sub></i>
+</li><li>The signature is valid if <i>r = x (</i>mod <i>n)</i>, invalid otherwise
+</li></ul>
+<br>
+Hash: <input type="text" name="hash" size="5"><br>
+<input type="button" value="Calculate Signature" onclick="do_sign()">
+<p>
+r = <input type="text" name="sign_r" size="5">,
+s= <input type="text" name="sign_s" size="5">
+</p><p>
+<input type="button" value="Check Signature" onclick="check_sign()">
+</p><hr>
+Details:<br>
+  <textarea name="details" id="details" rows="25" cols="90"></textarea>
+</form>
+<p>
+</p><hr>
+<p>Return to my <a href="http://styere.xyz/index.html">home page</a></p>
+<p><a href="mailto:Eugene.Styer@eku.edu" target="_top"></a></p>
+
+
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div><div class="ginger-floatingG-contentPopup"><div class="ginger-floatingG-contentPopup-wrap"><a class="ginger-floatingG-contentPopup-close">×</a><div class="ginger-floatingG-contentPopup-frame"><iframe scrolling="no" src="./saved_resource(1).html"></iframe></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./index(1).html"></iframe></div></div><iframe class="ginger-extension-definitionpopup" src="./index(2).html" style="left: -6.5px; top: 312px; z-index: 100001; display: none;"></iframe></body></html>

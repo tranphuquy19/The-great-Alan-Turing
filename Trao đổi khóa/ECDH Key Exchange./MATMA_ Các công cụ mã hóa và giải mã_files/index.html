@@ -1,0 +1,131 @@
+
+<!-- saved from url=(0097)http://192.168.1.5/mod/resource/cryptolab/Elliptic%20Curve%20Encryption%20DiffieHelman-GF(p).html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Elliptic Curve Encryption - GF(p)</title>
+<script language="JavaScript" src="./ECC.js.download"></script>
+<script language="JavaScript">
+// external script contains the generic ECC code
+
+// pick random numbers for Diffie-hellman
+function gen_rand_DH()
+{
+   // which curve are we using?
+   if ( document.ECC.choose_curve[0].checked )
+   {
+      // using GF(p)
+      document.ECC.A_rand.value=gen_rand(ECC_GFp_n);
+      document.ECC.B_rand.value=gen_rand(ECC_GFp_n);
+   }
+   else
+   {
+      // using GF(2^m)
+      document.ECC.A_rand.value=gen_rand(ECC_GF2m_n);
+      document.ECC.B_rand.value=gen_rand(ECC_GF2m_n);
+   }
+}
+
+// Do elliptic curve Diffie-Hellman
+function do_DH()
+{
+   var cur_G = get_G();
+
+   accumulated_output_info = "";
+
+   // which curve are we using?
+   var A_rand = parseInt( document.ECC.A_rand.value );
+   accumulated_output_info += "A's secret number = " + A_rand + "\n";
+   var A_msg = cur_G.smul( A_rand );
+   accumulated_output_info += "A sends " + A_msg.format() + "\n\n";
+
+   var B_rand = parseInt( document.ECC.B_rand.value );
+   accumulated_output_info += "B's secret number = " + B_rand + "\n";
+   var B_msg = cur_G.smul( B_rand );
+   accumulated_output_info += "B sends " + B_msg.format() + "\n\n";
+
+   // do they get the same result?
+   accumulated_output_info += "A now calculates " + A_rand + "*" + B_msg.format() + "\n";
+   var A_res = B_msg.smul( A_rand );
+   accumulated_output_info += "A's result = " + A_res.format() + "\n\n";
+
+   accumulated_output_info += "B now calculates " + B_rand + "*" + A_msg.format() + "\n";
+   var B_res = A_msg.smul( B_rand );
+   accumulated_output_info += "B's result = " + B_res.format() + "\n\n";
+
+   // output the details
+   document.ECC.details.value = accumulated_output_info;
+}
+</script>
+<style type="text/css">
+<!--
+.style1 {
+	font-size: 24px;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body>
+<p> <span class="style1">ECDH Key Exchange</span>.</p>
+<form name="ECC">
+Choose one of the two following elliptic curves:
+<table border="1">
+<tbody><tr>
+<td>
+<input type="radio" name="choose_curve" checked="">Curve over GF(p)<p>
+Given a prime p, the elliptic curves modulo p that we use are
+of the form: <i>y<sup>2</sup> = x<sup>3</sup> + ax + b</i>.
+</p><p>
+The curve and key information used for this page is:<br>
+<script language="JavaScript">
+// display the GF(p) curve
+print_ECC_GFp();
+</script>Public Key: p=71, a=4, b=-6, G=(2,9), Q=(38,63), n=73, h=1<br>Private key: d=7Public Key: p=71, a=4, b=-6, G=(2,9), Q=(38,63), n=73, h=1<br>Private key: d=7
+</p></td>
+<td>
+<input type="radio" name="choose_curve">Curve over GF(2<sup>m</sup>)<p>
+Given a field GF(2<sup>m</sup>) and a irreducable polynomial, the curve is
+of the form: <i>y<sup>2</sup> + xy = x<sup>3</sup> + ax<sup>2</sup> + b</i>.
+</p><p>
+The curve and key information used for this page is:<br>
+<script language="JavaScript">
+// display the GF(2^m) curve
+print_ECC_GF2m();
+</script>Public Key: m=7, generator polynomial=89 (g^7 + g^3 + 1), a=15, b=114, G=(0x1,0x24), Q=(0x13,0x45), n=73, h=2<br>Private key: d=7Public Key: m=7, generator polynomial=89 (g^7 + g^3 + 1), a=15, b=114, G=(0x1,0x24), Q=(0x13,0x45), n=73, h=2<br>Private key: d=7
+</p></td>
+</tr>
+</tbody></table>
+A common use of elliptic curve cryptography is to generate a shared secret key
+for use in secret key systems.  The Diffie-Hellman protocol can be applied to
+elliptic curves as follows:
+<ul>
+<li>Alice generates a secret key <i>r<sub>A</sub></i>
+</li><li>Alice calculates <i>P<sub>A</sub> = r<sub>A</sub>*e<sub>1</sub></i> and sends it to Bob.
+</li><li>Bob generates a secret key <i>r<sub>B</sub></i>
+</li><li>Bob calculates <i>P<sub>B</sub> = r<sub>B</sub>*e<sub>1</sub></i> and sends it to Alice.
+</li><li>Alice receives <i>P<sub>B</sub></i> and calculates <i>P = r<sub>A</sub>*P<sub>B</sub></i>
+</li><li>Bob receives <i>P<sub>A</sub></i> and calculates <i>P = r<sub>B</sub>*P<sub>A</sub></i>
+</li><li>Alice and Bob can use <i>P</i> 
+to generate a shared secret key suitable for
+<a href="http://styere.xyz/JS-AES.html">AES</a> or some other system.
+Some protocols use the <i>x</i>
+coordinate of <i>P</i> as the shared key,
+or a hash can be applied to <i>P</i> to generate the key.
+<p>Note that if Alice already has published an elliptic curve
+public key, then Bob and Alice can agree to use <i>Q</i>
+in place of <i>P<sub>A</sub></i>.
+</p></li></ul>
+A's random value: <input type="text" name="A_rand" size="5"><br>
+B's random value: <input type="text" name="B_rand" size="5"><br>
+<input type="button" value="Generate random values" onclick="gen_rand_DH()"><p>
+<input type="button" value="Do Diffie-Hellman" onclick="do_DH()">
+</p><hr>
+Details:<br>
+  <textarea name="details" id="details" rows="25" cols="90"></textarea>
+</form>
+<p>
+</p><hr>
+<p>Return to my <a href="http://styere.xyz/index.html">home page</a></p>
+<p><a href="mailto:Eugene.Styer@eku.edu" target="_top">Send Mail</a></p>
+
+
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div><div class="ginger-floatingG-contentPopup"><div class="ginger-floatingG-contentPopup-wrap"><a class="ginger-floatingG-contentPopup-close">×</a><div class="ginger-floatingG-contentPopup-frame"><iframe scrolling="no" src="./saved_resource.html"></iframe></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./index(1).html"></iframe></div></div></body></html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)http://192.168.1.5/mod/resource/cryptolab/Foursquare%20Cipher.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Practical Cryptography</title>
+        
+        <link href="http://practicalcryptography.com/static/core/img/favicon.png" rel="icon" type="image/png">
+
+        
+        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="./style(1).css">
+        <link rel="stylesheet" href="./prototip.css">
+        
+
+        
+        <script src="./prototype.js.download" type="text/javascript"></script>
+        <script src="./prototip.js.download" type="text/javascript"></script>
+        <!--[if IE]>
+        <script src="/static/core/js/excanvas.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="./flotr-0.2.0-alpha.js.download" type="text/javascript"></script>
+        <!--[if lt IE 8]>
+        <script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js" type="text/javascript"></script>
+        <![endif]-->
+        
+    <script type="text/javascript" async="" src="./embed.js.download"></script><link rel="preload" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.04dd90af7bc65bdd97911fd885cc83a9.css"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.e9b4803ecd9f11a1b0b249822211345c.js"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.86cf813e6fb8f13e8ca67e44da312a70.js"><link rel="preload" as="script" href="https://disqus.com/next/config.js"><script src="./alfalfa.4a5fcca1fe50a757044dfd331b660625.js.download" async="" charset="UTF-8"></script><link rel="preload" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.04dd90af7bc65bdd97911fd885cc83a9.css"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.e9b4803ecd9f11a1b0b249822211345c.js"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.86cf813e6fb8f13e8ca67e44da312a70.js"><link rel="preload" as="script" href="https://disqus.com/next/config.js"></head>
+
+    <body id="ciphers">
+    <div id="content-wrapper">
+            <div id="content">
+                
+              <div id="main-content" class="column">
+                    
+
+    <h1>Four-Square Cipher</h1>
+    
+<script type="text/javascript"> 
+function Encrypt() {
+    plaintext = document.getElementById("p").value.toLowerCase().replace(/[^a-z]/g, "").replace(/[j]/g, "i");  
+    k1 = document.getElementById("keysquare1").value.toLowerCase().replace(/[^a-z]/g, ""); 
+    k2 = document.getElementById("keysquare2").value.toLowerCase().replace(/[^a-z]/g, ""); 
+    // do some error checking
+    if(plaintext.length < 1){ alert("please enter some plaintext (letters and numbers only)"); return; }    
+    if(k1.length != 25 || k2.length != 25){ alert("keysquare must be 25 characters in length"); return; }
+    if(plaintext.length % 2 == 1) plaintext += "x";
+    ciphertext = ""; rt = "abcdefghiklmnopqrstuvwxyz";
+    for(i=0; i<plaintext.length; i+=2){
+        a = (rt.indexOf(plaintext.charAt(i)) % 5);
+        b = parseInt(rt.indexOf(plaintext.charAt(i)) / 5);
+        c = (rt.indexOf(plaintext.charAt(i+1)) % 5);
+        d = parseInt(rt.indexOf(plaintext.charAt(i+1)) / 5);
+        ciphertext += k1.charAt(5*b + c);
+        ciphertext += k2.charAt(5*d + a);
+    }
+    document.getElementById("c").value = ciphertext.toUpperCase();
+}
+
+function Decrypt(f) {
+    ciphertext = document.getElementById("c").value.toLowerCase().replace(/[^a-z0-9]/g, "").replace(/[j]/g, "i");  ;  
+    k1 = document.getElementById("keysquare1").value.toLowerCase().replace(/[^a-z]/g, ""); 
+    k2 = document.getElementById("keysquare2").value.toLowerCase().replace(/[^a-z]/g, ""); 
+    // do some error checking
+    if(ciphertext.length < 1){ alert("please enter some plaintext (letters and numbers only)"); return; }    
+    if(k1.length != 25 || k2.length != 25){ alert("keysquare must be 25 characters in length"); return; }
+    if(ciphertext.length % 2 == 1){alert("ciphertext should be even length (wrong algorithm?)"); return; }
+    plaintext = ""; rt = "abcdefghiklmnopqrstuvwxyz";
+    for(i=0; i<ciphertext.length; i+=2){
+        a = (k1.indexOf(ciphertext.charAt(i)) % 5); 
+        b = parseInt(k1.indexOf(ciphertext.charAt(i)) / 5); 
+        c = (k2.indexOf(ciphertext.charAt(i+1)) % 5); 
+        d = parseInt(k2.indexOf(ciphertext.charAt(i+1)) / 5); 
+        plaintext += rt.charAt(5*b + c);
+        plaintext += rt.charAt(5*d + a);
+    }
+    document.getElementById("p").value = plaintext.toUpperCase();
+}
+
+function GenRandKey(k){
+    var keychars = "abcdefghiklmnopqrstuvwxyz";
+    var chars = keychars.split("");
+    ret=""; lim = chars.length
+    for(i=0; i<lim; i++){
+        index = Math.floor(chars.length*Math.random());
+        ret += chars[index];
+        chars.splice(index,1);
+    } 
+    document.getElementById("keysquare" + k).value = ret.toUpperCase();
+}
+</script> 
+
+<h2>Introduction </h2> 
+<p>The Four-square cipher encrypts pairs of letters (like playfair), which makes it significantly stronger than substitution ciphers etc. since
+frequency analysis becomes much more difficult.</p>
+ 
+<p>Felix Delastelle (1840 - 1902) invented the four-square cipher, first published in a book in 1902. Delastelle was most famous for his invention 
+of several systems of polygraphic substitution ciphers including bifid, trifid, and the four-square cipher.</p>
+
+<p>For a guide on how to break the foursquare cipher using Simulated Annealing, see <a href="http://practicalcryptography.com/cryptanalysis/stochastic-searching/cryptanalysis-foursquare-cipher/">Cryptanalysis of the Foursquare Cipher</a>.</p>
+ 
+<h2>The Algorithm</h2> 
+<p>The four-square cipher uses four 5 by 5 matrices arranged in a square. Each of the 5 by 5 matrices contains 25 letters, usually the letter 'j' is merged with 'i' (wikipedia says 'q' is omitted, it is not very important since both q and j are rather rare letters). In general, the upper-left and lower-right matrices are the "plaintext squares" and each contain a standard alphabet. The upper-right and lower-left squares are the "ciphertext squares" and contain a mixed alphabetic sequence.</p>
+
+<p>The ciphertext squares can be generated using a keyword (dropping duplicate letters), then fill the remaining spaces with the remaining letters of the alphabet in order. Alternatively the ciphertext squares can be generated completely randomly. The four-square algorithm allows for two separate keys, one for each of the two ciphertext matrices.</p>
+
+<h3>Steps </h3>
+<ol>
+    <li>
+        <p>Break up the plaintext into bigrams i.e. ATTACK AT DAWN --&gt; AT TA CK AT DA WN<br>
+        An 'X' (or some other character) may have to be appended to ensure the plaintext is an even length.</p>
+    </li>
+    <li>
+        <p>Using the four 'squares', two plain alphabet squares and two cipher alphabet squares, locate the bigram to encrypt in the plain alphabet squares. The example below enciphers the bigram 'AT'. The first letter is located from the top left square, the second letter is located in the bottom right square.
+</p><pre> 
+<b style="color:black;background-color:#bbbbbb">a</b> b c d e   Z G P T F
+f g h i k   O I H M U
+l m n o p   W D R C N
+q r s t u   Y K E Q A
+v w x y z   X V S B L
+ 
+M F N B D   a b c d e
+C R H S A   f g h i k
+X Y O G V   l m n o p
+I T U E W   q r s <b style="color:black;background-color:#bbbbbb">t</b> u
+L Q Z K P   v w x y z
+</pre> 
+    </li>
+    <li>
+        <p>Locate the characters in the ciphertext at the corners of the rectangle that the letters 'AT' make:
+</p><pre> 
+<b style="color:black;background-color:#bbbbbb">a</b> b c d e   Z G P <b style="color:black;background-color:#ffff66">T</b> F
+f g h i k   O I H M U
+l m n o p   W D R C N
+q r s t u   Y K E Q A
+v w x y z   X V S B L
+ 
+M F N B D   a b c d e
+C R H S A   f g h i k
+X Y O G V   l m n o p
+<b style="color:black;background-color:#ffff66">I</b> T U E W   q r s <b style="color:black;background-color:#bbbbbb">t</b> u
+L Q Z K P   v w x y z
+</pre>
+        <p></p>
+    </li><li>
+        <p>Using the above keys, the bigram 'AT' is encrypted to 'TI'.</p>
+        <p>The text 'attack at dawn', with the keys 'zgptfoihmuwdrcnykeqaxvsbl' and 'mfnbdcrhsaxyogvituewlqzkp', becomes:
+</p><pre>ATTACKATDAWN
+TIYBFHTIZBSY
+</pre> 
+        <p></p>
+    </li>
+</ol>
+ 
+<h2>JavaScript Example of the Foursquare Cipher </h2> 
+This is an implementation of the Foursquare cipher in javascript. The keysquares are written out as a
+25 character string, instead of a 5 by 5 array.
+Plaintext<br> 
+<textarea id="p" name="p" rows="4" cols="50">attack at dawn</textarea> 
+<p>keysquare 1 =
+<input id="keysquare1" name="keysquare1" size="25" maxchars="25" value="zgptfoihmuwdrcnykeqaxvsbl" type="text"> 
+<input id="genKey1" value="Generate Random Key 1" onclick="GenRandKey(1)" type="button"><br> 
+keysquare 2 =
+<input id="keysquare2" name="keysquare2" size="25" maxchars="25" value="mfnbdcrhsaxyogvituewlqzkp" type="text"> 
+<input id="genKey2" value="Generate Random Key 2" onclick="GenRandKey(2)" type="button"> 
+</p> 
+<p><input name="btnEn" value="v Encrypt v" onclick="Encrypt()" type="button"> 
+<input name="btnDe" value="^ Decrypt ^" onclick="Decrypt()" type="button"></p> 
+<p>Ciphertext<br> 
+<textarea id="c" rows="4" cols="50"></textarea> </p> 
+ 
+<h2>Other Implementations </h2>
+<p>To encipher your own messages in python, you can use the <a href="http://www.practicalcryptography.com/miscellaneous/pycipher/installing-pycipher/">pycipher</a> module. To install it, use <tt>pip install pycipher</tt>. To encipher messages with the Foursquare cipher (or another cipher, see <a href="http://pycipher.readthedocs.org/en/latest/">here for documentation</a>):</p>
+<pre style="text-align:left">&gt;&gt;&gt;from pycipher import Foursquare
+&gt;&gt;&gt;fs = Foursquare('zgptfoihmuwdrcnykeqaxvsbl','mfnbdcrhsaxyogvituewlqzkp')
+&gt;&gt;&gt;fs.encipher('defend the east wall of the castle')
+'FBUMCNESFDPIKKZXCXMIUNZNQUNM'
+&gt;&gt;&gt;fs.decipher('FBUMCNESFDPIKKZXCXMIUNZNQUNM')
+'DEFENDTHEEASTWALLOFTHECASTLE'
+</pre> 
+
+<h2>Cryptanalysis</h2> 
+<p>For a guide on how to break the foursquare cipher using Simulated Annealing, see <a href="http://practicalcryptography.com/cryptanalysis/stochastic-searching/cryptanalysis-foursquare-cipher/">Cryptanalysis of the Foursquare Cipher</a>.</p>
+
+<p>The four-square cipher can be easily cracked with enough ciphertext. It is quite simple to determine the key if both plaintext and ciphertext are known, and for this reason guessing parts of the plaintext is a very effective way of cracking this cipher. If a portion of the plaintext is known or can be guessed this should be exploited first to determine as much of the key as possible, then more guessing can be applied or other techniques described below.</p>
+
+<p>Compared to the Playfair cipher, a four-square cipher will not show reversed ciphertext digraphs for reversed plaintext digraphs (e.g. the digraphs AB BA would encrypt to some pattern XY YX in Playfair, but not in four-square). This, of course, is only true if the two keywords are different. Another difference between four-square and Playfair which makes four-square a stronger encryption is the fact that double letter digraphs will occur in four-square ciphertext. [1]</p>
+ 
+<p>The four-square cipher is a stronger cipher than Playfair, but it is more cumbersome because of its use of two keys and preparing the encryption/decryption sheet can be time consuming. Given that the increase in encryption strength afforded by four-square over Playfair is marginal and that both schemes are easily defeated if sufficient ciphertext is available, Playfair was much more common.</p>
+ 
+<h2>References </h2> 
+<ul>
+    <li>[1] <a href="http://en.wikipedia.org/wiki/Four-square_cipher">Wikipedia</a> has a good description of the encryption/decryption process, history and cryptanalysis of this algorithm</li>
+    <li><span style="text-decoration: underline;">Basic Cryptanalysis</span>, FM 34-40-2, FIELD MANUAL, DEPARTMENT OF THE ARMY <a href="http://www.umich.edu/~umich/fm-34-40-2/">http://www.umich.edu/~umich/fm-34-40-2/</a></li>
+</ul>
+</div>
+                <div class="clear"></div>
+                
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script><script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script><iframe style="display: none;" src="./saved_resource.html"></iframe><script src="./ga.js.download" type="text/javascript"></script>
+
+        <script type="text/javascript">
+        // Analytics
+        try {
+            var pageTracker = _gat._getTracker("UA-7244051-1");
+            pageTracker._trackPageview();
+        } catch(err) {}
+
+        
+        </script>
+    
+
+<div contenteditable="false" id="ginger-floatingG-container" style="position: absolute; top: 0px; left: 0px;"><div class="ginger-floatingG ginger-floatingG-closed" style="display: none;"><div class="ginger-floatingG-disabled-main"><div class="ginger-floatingG-bar-tool-tooltip">Enable Ginger</div></div><div class="ginger-floatingG-offline-main"><div class="ginger-floatingG-bar-tool-tooltip"><em>Cannot connect to Ginger</em> Check your internet connection<br> or reload the browser</div></div><div class="ginger-floatingG-enabled-main"><div class="ginger-floatingG-bar"><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-disable"><a></a><div class="ginger-floatingG-bar-tool-tooltip">Disable in this text field</div></div><div class="ginger-floatingG-bar-tool"><a class="ginger-floatingG-bar-tool-edit">Edit</a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div><div class="ginger-floatingG-bar-tool ginger-floatingG-bar-tool-mistakes"><a><span class="ginger-floatingG-bar-tool-mistakes-count"></span><svg width="14px" height="14px" viewBox="0 0 66 66" class="ginger-floatingG-loader-spinner"><circle class="ginger-floatingG-loader-spinner-path" fill="none" stroke-width="8.5" stroke-linecap="round" cx="33" cy="33" r="28"></circle></svg></a><div class="ginger-floatingG-bar-tool-tooltip">Edit in Ginger</div></div></div></div></div></div><div class="ginger-extension-writer" style="display: none;"><div class="ginger-extension-writer-frame"><iframe src="./index(1).html"></iframe></div></div>
+<iframe style="display: none;" src="./saved_resource(1).html"></iframe><div class="adsbox">&nbsp;</div></body></html>

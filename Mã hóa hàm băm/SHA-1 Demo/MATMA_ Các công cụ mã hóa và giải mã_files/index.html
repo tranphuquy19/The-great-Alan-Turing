@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0058)http://192.168.1.5/mod/resource/cryptolab/SHA-1%20Demo.htm -->
+<html><head bgcolor="white"><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>SHA-1: Demo</title>
+
+<style type="text/css">BODY {
+	MARGIN: 50px 200px 50px 50px; FONT-FAMILY: courier, fixed, monospace; COLOR: #363636; FONT-SIZE: 15px
+}
+H2 {
+	FONT-WEIGHT: bold
+}
+A {
+	COLOR: black; TEXT-DECORATION: none
+}
+</style>
+
+<meta name="keywords" content="cryptography tutorial, interactive learning,
+
+cryptography animation, DES, security demonstration, buffer overflow
+
+vulnerabilities, federal cyber service, NSF SFS, scholarship for service,
+
+cyber security, information assurance education, cryptography, security
+
+dimensions, security personnel, NSF security grant, security expertise,
+
+aviation security education, interactive learning in security">
+<meta name="description" content="Interactive learning module for computer
+
+security concepts related to cryptography.">
+<meta name="GENERATOR" content="MSHTML 8.00.6001.19046"></head>
+<body bgcolor="#adadad">
+<h2>SHA-1 Demo:</h2>
+<p>This demonstrates the padding technique used for SHA-1 and explains how SHA-1 
+works </p>
+<p>Enter a message in the text box below. </p>
+<form name="SHA"><textarea wrap="physical" rows="10" cols="100" name="Message">	</textarea> <br><input onclick="Convert();" value="Convert" type="button"><br>
+<p>Below is a bit level representation of your message.</p><textarea wrap="physical" rows="10" cols="100" readonly="" name="Converted">	</textarea> <br><input onclick="Pad();" value="Step 1" type="button"><br>
+<p>Your message contains <input size="6" name="MessageLength"> bits. The message 
+will be padded to make it 448 mod 512 bits long. Since your message is <input size="6" name="MessageLength2"> we will add <input size="6" name="PaddedBits"> because: 
+<input size="6" name="MessageLength3"> MOD 512 = <input size="6" name="ModResult"> We 
+will add ONE 1 and <input size="3" name="PadValue"> ZEROS. After this operation a 64 
+bit value which represents the original length of the message is added. For this 
+particular message the input value added will be <input size="64" name="PadMessageLength">. So the message after all appending operations are 
+complete will look like, at the bit level the text box below. If you look at the 
+end of message you should be able to identify the added bits.</p><textarea wrap="physical" rows="10" cols="100" name="PaddedMessage">	</textarea> <br>
+<p>A 160 bit buffer (4 registers) is used to hold the intermediate and final 
+result of the hash function. They are initialized to the following values:<br>
+</p><div align="center">A = 67452301<br>B = EFCDAB89<br>C = 98BADCFE<br>D = 
+10325476<br>E = C3D2E1F0</div>
+<p>At this point the message is passed in blocks of 512 bits through the the 
+compression function as seen below:<br><img alt="SHA-1 compression function" src="./figure95.gif" width="500" height="500"><br>Figure taken from 
+<a href="http://www.amazon.com/exec/obidos/ASIN/0138690170/qid=1024331902/sr=8-1/ref=sr_8_1/103-3289433-8960651">Cryptography 
+and Network Security: Principles and Practice</a> by William Stallings 
+<br><br></p>
+<p>After all the 512 bit blocks have been processed a 160 bit message digest is 
+produced, which is a function of all the bits of your message. </p>
+<p>The operations of the Functions f1, f2, f3, f4 can be expressed by the 
+following diagram:<br><img alt="Elementary SHA-1 Operation" src="./figure96.gif" width="500" height="500"><br>Figure taken from 
+<a href="http://www.amazon.com/exec/obidos/ASIN/0138690170/qid=1024331902/sr=8-1/ref=sr_8_1/103-3289433-8960651">Cryptography 
+and Network Security: Principles and Practice</a> by William 
+Stallings<br><br>where t is equal to the step number and f can be expressed 
+as:<br><br>f1 = f(t, B, C, D): (B AND C) OR (B` AND D) <br>f2 = f(t, B, C, D): B 
++ C + D<br>f3 = f(t, B, C, D): (B AND C) OR (B AND D) OR (C AND D) <br>f4 = f(t, 
+B, C, D): B + C + D<br><br>and Wt is produced according to the diagram below: 
+<img alt="" src="./figure97.gif" width="500" height="500"><br>Figure taken from <a href="http://www.amazon.com/exec/obidos/ASIN/0138690170/qid=1024331902/sr=8-1/ref=sr_8_1/103-3289433-8960651">Cryptography 
+and Network Security: Principles and Practice</a> by William Stallings<br><br><input onclick="ShowFinalMessage();" value="Step 3" type="button"><br><textarea wrap="physical" rows="10" cols="100" name="FinalMessage">	</textarea> <br><input value="clear" type="reset"> 
+</p><p>This was created as part of the <a href="http://nsfsecurity.pr.erau.edu/crypto/index.html">Cryptography Module</a> 
+of NSF Award No. 0113627: <a href="http://nsfsecurity.pr.erau.edu/">"Increasing 
+Security Expertise in Aviation-oriented Computing Education: A Modular 
+Approach"</a>, at Embry-Riddle Aeronautical University in Prescott, Arizona. 
+<br><br>Created by Nathaniel Alderson<br></p></form>
+<script language="JavaScript">
+
+var OriginalMessageLength = 0;
+
+var OriginalMessage;
+
+
+
+function Convert()
+
+{
+
+	//testing out the textarea tag
+
+	var Message = document.SHA.Message.value;
+
+	var y = Message.length;
+
+	var i = 0;
+
+	var temp ;
+
+	var j = 0;
+
+	var k = 0;
+
+
+
+	OriginalMessage = Message;	
+
+    document.SHA.Converted.value = "";	
+
+
+
+	for(x = 0; x < y ; x++)
+
+	{
+
+		i = Message.charCodeAt(x);
+
+		temp = i.toString(2);
+
+
+
+		if(temp.length < 8)
+
+		{
+
+			k = temp.length;
+
+			for(j = 8; j > k ; j--)
+
+			{
+
+				temp = "0" + temp;
+
+			}
+
+		}
+
+		
+
+		document.SHA.Converted.value += temp;		
+
+		document.SHA.Converted.value += " ";
+
+	}
+
+	OriginalMessageLength = y;
+
+	
+
+}
+
+
+
+function Pad()
+
+{
+
+
+
+	document.SHA.MessageLength.value = OriginalMessageLength * 8;
+
+  	document.SHA.MessageLength2.value = OriginalMessageLength * 8;
+
+    var x = (OriginalMessageLength * 8) % 512;
+
+    var y = (OriginalMessageLength * 8);
+
+	var a = y.toString(2);
+
+	var w = a.length ;
+
+ 
+
+    while( w < 64)
+
+    {
+
+        a = "0" + a;
+
+        ++w;
+
+    }
+
+ 
+
+ 
+
+    if(x < 448)
+
+    {
+
+        x = 448 - x;
+
+ 
+
+    }
+
+    if(x > 448)
+
+    {
+
+        x =  512 - (x - 448)
+
+    }
+
+    if(x == 448)
+
+    {
+
+        x = x + 512;
+
+    }
+
+	document.SHA.PaddedBits.value = x;
+
+	document.SHA.ModResult.value = (y + x) % 512;
+
+	document.SHA.MessageLength3.value = (OriginalMessageLength * 8) + x;
+
+	document.SHA.PadValue.value = x - 1;
+
+	document.SHA.PadMessageLength.value = a;
+
+	
+
+	var b = x/8;
+
+	
+
+	document.SHA.PaddedMessage.value = document.SHA.Converted.value;
+
+	document.SHA.PaddedMessage.value += "10000000 ";
+
+	
+
+	for(b = (x / 8) -1; b > 0; --b)
+
+	{
+
+		document.SHA.PaddedMessage.value += "00000000 ";
+
+	} 
+
+	
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(0,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(8,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(16,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(24,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(32,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(40,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(48,8) + " ";
+
+	document.SHA.PaddedMessage.value += document.SHA.PadMessageLength.value.substr(56,8) + " ";
+
+
+
+
+
+}
+
+
+
+
+
+function ShowFinalMessage()
+
+{
+
+	document.SHA.FinalMessage.value = OriginalMessage;
+
+    document.SHA.FinalMessage.value += "\n\n                HASH CODE INSERTED HERE";  
+
+}
+
+
+
+
+
+</script>
+
+<table border="0" cellspacing="5" cellpadding="5" width="758">
+  <tbody>
+  <tr>
+    <td>
+      <div align="center">
+      <hr align="center" width="25%">
+
+      <p><font face="Georgia, Times New Roman, Times, serif"><b><a href="http://nsfsecurity.pr.erau.edu/index.html">Project Info</a> • <a href="http://nsfsecurity.pr.erau.edu/modules.html">Modules</a> • <a href="http://nsfsecurity.pr.erau.edu/links.html">Links</a> • <a href="file:///G4%20HD/Documents/nsf%20docs/team.html"></a><a href="http://nsfsecurity.pr.erau.edu/papers.html">Papers</a> • <a href="http://nsfsecurity.pr.erau.edu/team.html">Team</a> • <a href="http://www.nsf.gov/">NSF</a></b></font></p>
+      <p>Last update: <!-- #BeginDate format:Am1 -->August 1, 2002<!-- #EndDate --> <img src="./spacer.gif" width="21" height="8"> <!-- BEGIN WebSTAT Activation Code -->
+      <script language="JavaScript" type="text/javascript" src="./wsv2.txt"></script><script language="JavaScript">WS_js = "1"</script><script language="JavaScript1.1">WS_js = "1.1"</script><script language="JavaScript1.2">WS_js = "1.2"</script><script language="JavaScript1.3">WS_js = "1.3"</script><script language="JavaScript1.4">WS_js = "1.4"</script><script language="JavaScript1.5">WS_js = "1.5"</script><script language="JavaScript1.6">WS_js = "1.6"</script><script language="JavaScript2.0">WS_js = "2.0"</script></p><div style="visibility: visible; z-index:1000;"><a href="http://www.webstat.com/free_web_statistics.php" target="_new"><img src="./wsb.php" border="0" alt="Web Statistics and Counters"></a></div>
+      <noscript><A href="http://hits.webstat.com/"><IMG border=0 
+      alt="WebSTAT - Free Web Statistics" align=top 
+      src="SHA-1%20Demo_files/nada.gif"></A> </noscript><!-- END WebSTAT Activation Code --><p></p></div></td></tr></tbody></table>
+</body></html>

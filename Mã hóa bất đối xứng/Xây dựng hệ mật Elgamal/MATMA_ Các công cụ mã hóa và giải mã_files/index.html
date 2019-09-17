@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- saved from url=(0082)http://192.168.1.5/mod/resource/cryptolab/public-key-crypto-js-master/elgamal.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Xây dựng hệ mật Elgamal</title>
+
+    <link href="./bootstrap.css" rel="stylesheet">
+
+    <script src="./angular.js"></script>
+
+    <script src="./global.js"></script>
+    <script src="./app.js"></script>
+    <script src="./PrimeNumbers.js"></script>
+    <script src="./ExtendedEuclid.js"></script>
+    <script src="./PowerModulo.js"></script>
+    <script src="./GeneratePrimitiveNumber.js"></script>
+    <script src="./ElgamalController.js"></script>
+
+</head>
+<body ng-app="public-key-crypto-js" ng-controller="ElgamalController" class="container ng-scope">
+
+
+<h2>Xây dựng hệ mật Elgamal</h2>
+
+<form class="row ng-pristine ng-valid">
+    <div class="col-md-8 col-sm-10 col-xs-12">
+
+        <div class="form-group">
+            <label for="x">Nhập văn bản cần mã hóa: x</label>
+            <input ng-model="x" type="text" id="x" placeholder="x = ?" class="form-control ng-pristine ng-untouched ng-valid">
+        </div>
+        <div class="form-group">
+            <label for="x">Nhập số nguyên tố: p</label>
+            <input ng-model="p" type="text" id="p" placeholder="p = ?" class="form-control ng-pristine ng-untouched ng-valid">
+        </div>
+        <div class="form-group">
+            <label for="x" class="ng-binding">Nhập khóa bí mật: a &lt; p</label>
+            <input ng-model="a" type="text" id="a" placeholder="a = ?" class="form-control ng-pristine ng-untouched ng-valid">
+        </div>
+        <div class="form-group">
+            <label for="x" class="ng-binding">Chọn giá trị ngẫu nhiên: k &lt; p</label>
+            <input ng-model="k" type="text" id="k" placeholder="k = ?" class="form-control ng-pristine ng-untouched ng-valid">
+        </div>
+    </div>
+</form>
+
+<p>Xây dụng Elgamal: x = <code class="ng-binding">?</code>, p = <code class="ng-binding">?</code>, a = <code class="ng-binding">?</code>, k =
+    <code class="ng-binding">?</code></p>
+
+<p class="ng-binding">P là số nguyên tố: false</p>
+
+<!-- ngIf: !isPrime(p) --><div ng-if="!isPrime(p)" class="ng-scope">
+    <p>Gợi ý sử dụng số nguyên tố: <code class="ng-binding">293</code></p>
+</div><!-- end ngIf: !isPrime(p) -->
+<!-- ngIf: gcd(k, p - 1) != 1 --><div ng-if="gcd(k, p - 1) != 1" class="ng-scope">
+    <p class="text-danger text-error ng-binding">Không thỏa mãn tính khả nghịch: gcd(k, p - 1) = gcd(, -1) = -1</p>
+</div><!-- end ngIf: gcd(k, p - 1) != 1 -->
+
+<!-- ngIf: x && p && a && k && isPrime(p) && gcd(k, p - 1) == 1 -->
+
+<hr>
+
+<!-- ngIf: ky -->
+
+<p><a href="javascript:void(0)" ng-click="ky = !ky">Ký văn bản và phụ lục ?</a></p>
+
+
+
+</body></html>

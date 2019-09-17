@@ -1,0 +1,249 @@
+
+<!-- saved from url=(0089)http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Example of Breaking a Substitution</title>
+</head>
+<body bgcolor="bfffff">
+<h1 align="center">
+An Example of Breaking a Monoalphabetic Substitution Cipher
+</h1>
+Here we have our unknown cryptogram:
+<hr>
+<pre>CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+
+LCGJQ CXQKO GPQYD
+</pre>
+<hr>
+The first step is to obtain the statistical information about this cryptogram. We start with
+the<a href="http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution_files/Example%20of%20Breaking%20a%20Substitution.html"> letter frequency count</a>, and a <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#digram">digram and trigram</a> count.
+
+<hr>
+<a name="start"></a>
+<h3> We organize this analysis into 7 stages:</h3>
+<menu>
+<li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step1"> Stage 1 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step2"> Stage 2 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step3"> Stage 3 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step4"> Stage 4 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step5"> Stage 5 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step6"> Stage 6 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#step7"> Stage 7 </a>
+</li><li> <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#sol"> Solution </a>
+</li></menu>
+<hr>
+<a name="step1"></a>
+We start our cryptanalysis by trying to identify some very high
+frequency letters: (In the analysis, capital letters refer to the cryptogram, lower case letters to English)
+<ul>
+<li> G is the most frequently occurring letter, so we assume that it is an "e".
+</li><li> "the" is the most frequent trigram in English, so we look for frequent trigrams that end in G, i.e., QAG, KOG, KUG and KJG.
+</li><li> "t" should be a high frequency letter and "h" a medium frequency letter. QAG has a slight advantage over KUG in this regard.
+The "th" digram is the most frequent, supporting QAG as the correct choice.
+</li></ul>
+<hr>
+<a name="step2"></a>
+Having identified "t", "h" and "e" as Q, A and G respectively, we look at our cryptogram again.
+<pre>      e e    e th e   e   e t     e  tth  tt  e
+CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+      te      the       t  e   e th   e      th 
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+e               t    e    e      e     e   e t
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+  e t   t   e t
+LCGJQ CXQKO GPQYD
+</pre>
+<ul>
+<li> F (occuring in block 7) must be a vowel and a high frequency one like "a" or "o" (as opposed to u or i). "tha" is a high frequency
+trigram, and QAF is on our list, so we associate F with a.
+</li><li> "an" is a high frequency digram and "and" a high frequency trigram. FJ and FJZ would seem to fit, so associate J with n and Z with d.
+</li></ul>
+<a href="http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution_files/Example%20of%20Breaking%20a%20Substitution.html"> letter frequency count</a>, and  <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#digram">digram and trigram</a> count.<p>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> Start </a>
+</p><hr>
+<a name="step3"></a>
+<pre>      e e    edth e   e   e t and e  ttha tt  e
+CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+and a te  a   the     n ta e   e th a ed   n th 
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+e      a    nd  t    e    ean d ne    ne   e t
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+  ent   t   e t
+LCGJQ CXQKO GPQYD
+
+abcdefghijklmnopqrstuvwxyz
+F..ZG..A.....J.....Q......
+</pre>
+<ul>
+<li> e,t,a,o,n are the most frequent letters and we have found 4. The high frequency K must surely be our missing letter. Associate K with o.
+</li><li> "he" and "re" are high frequency digrams. OG is on our list so associating O with r is pausible considering that "r" is a medium frequency
+letter, and so is O.
+</li></ul>
+<a href="http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution_files/Example%20of%20Breaking%20a%20Substitution.html"> letter frequency count</a>, and  <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#digram">digram and trigram</a> count.<p>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> Start </a>
+</p><hr>
+<a name="step4"></a>
+<pre> o o  e e o  edth e o e   e t and e  ttha tt  e
+CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+and a teo a   the  r  n ta e  re th a edr  n th 
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+e r    aro  ndort  o e  orean done   one  re t
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+  ent   tor e t
+LCGJQ CXQKO GPQYD
+
+abcdefghijklmnopqrstuvwxyz
+F..ZG..A.....JK..O.Q......
+</pre>
+<ul>
+<li> Now looking at ..oreandone..one.. (above blocks 21 and 22), we can see ".. and one .. one..", a common phrase which would indicate
+that IX should be associated with by.
+</li><li> Examining the keyword substitution list, we clearly see the end of the alphabet in place. This would force us to associate s with P and 
+z with Y. The spacing would require that q is associated with either M or N, but the low frequency of "q" favors the association of q with N.
+</li></ul>
+<a href="http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution_files/Example%20of%20Breaking%20a%20Substitution.html"> letter frequency count</a>, and  <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#digram">digram and trigram</a> count.<p>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> Start </a>
+</p><hr>
+<a name="step5"></a>
+<pre> oso  e e o  edth e o e   est andbe sttha tt  e
+CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+and a teo a   the  r  n ta e  resth a edr  n th 
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+e r    aro  ndort  obe  orean doneb yone  re ts
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+  ent  ytor estz
+LCGJQ CXQKO GPQYD
+
+abcdefghijklmnopqrstuvwxyz
+FI.ZG..A.....JK.NOPQ....XY
+</pre>
+<ul>
+<li> The remaining high frequency letters are C and L, while the last of the high frequency letters in English is an "i". The occurance of ..CC.. in 
+block 11 makes the choice of C for i a poor one, so we associate L with i.
+</li><li> The order of frequency for doubles in English is "ss", "ee", "tt", "ff", "ll", "mm", and "oo". Thus C is most likely f, l or m. f and m would give
+poor fits in block 11 so we associate C with l.
+</li></ul>
+<a href="http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution_files/Example%20of%20Breaking%20a%20Substitution.html"> letter frequency count</a>, and  <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#digram">digram and trigram</a> count.<p>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> Start </a>
+</p><hr>
+<a name="step6"></a>
+<pre>loso  e elo  edth elo e liest andbe sttha tti e
+CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+and a teo a llthe ir in ta e  resth a edr  n th 
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+eir    aro  ndort  obe  orean doneb yone  re ts
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+ilent lytor estz
+LCGJQ CXQKO GPQYD
+
+abcdefghijklmnopqrstuvwxyz
+FI.ZG..AL..C.JK.NOPQ....XY
+</pre>
+<ul>
+<li> From the keyword list, we can see that p should be associated with M. 
+</li><li> The rest of the letters can be determined by trial and error.
+<ul>
+<li> Blocks 4 and 5 indicate U associated with v to get the word "lovliest".
+</li><li> Block 8 indicates H associated with m to get "time".
+</li><li> Blocks 10 and 11 indicate E associated with f to get "of all".
+</li><li> Blocks 12 and 13 indicate R associated with g to get "vintage".
+</li><li> Block 24 indicates T associated with c to get "crept".
+</li></ul>
+
+</li></ul>
+<a href="http://192.168.1.5/mod/resource/cryptolab/Example%20of%20Breaking%20a%20Substitution_files/Example%20of%20Breaking%20a%20Substitution.html"> letter frequency count</a>, and  <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#digram">digram and trigram</a> count.<p>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> Start </a>
+</p><hr>
+<a name="step7"></a>
+<pre>losom e elo vedth elove liest andbe sttha ttime
+CKPKH GVGCK UGZQA GCKUG CLGPQ FJZIG PQQAF QQLHG
+andfa teofa llthe irvin tagep resth avedr  n th 
+FJZEF QGKEF CCQAG LOULJ QFRGM OGPQA FUGZO SJBQA
+eirc  paro  ndort  obef orean doneb yonec repts
+GLOTS MFOKS JZKOQ VKIGE KOGFJ ZKJGI XKJGT OGMQP
+ilent lytor estz
+LCGJQ CXQKO GPQYD
+
+abcdefghijklmnopqrstuvwxyz
+FITZGERAL..CHJKMNOPQ.U..XY
+</pre>
+<ul>
+<li> A final checking of the substitution list gives the remaining associations:
+<ul>
+<li> j with D
+</li><li> k with B
+</li><li> u with S
+</li><li> w with V
+</li><li> x with W
+</li></ul>
+
+</li></ul>
+<a name="sol"></a>
+The cryptogram is finally solved (with keyword FITZGERALD).
+<blockquote>
+<b>Lo! some we loved, the lovliest and best<br>
+That Time and Fate of all their Vintage prest,<br>
+Have drunk their Cup a Round or two before<br>
+And one by one crept silently to rest.</b>
+</blockquote>
+<hr>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> Start </a><p>
+Back to<a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/m5410cc.html"> Lecture Notes</a></p><p>
+Back to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/m5410.html">Supplementary Material</a>
+</p><hr>
+<a name="frequency"><h3>Frequency Lists</h3></a>
+<pre>                   Cryptogram                English (based on 135 letters)
+                               
+                  G .......... 21              e .................... 17
+                  Q .......... 16              t .................... 13
+                  K .......... 12              a, o ................. 11
+                  F,J,O ......  9              n, i ................. 10
+                  C ..........  8              s ....................  9
+                  L,P,Z ......  6              r ....................  8
+                  A ..........  5              h ....................  7
+                  U ..........  4              l, d .................  5
+                  E,I,M,S ....  3              c, u .................  4
+                  H,T,V,X ....  2              p,f,m,w ..............  3
+                  B,D,R,Y ....  1              y,b,g ................  2
+                                               v,k ..................  1
+</pre>
+<hr>
+Return to<a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> start.</a>
+<hr>
+<a name="digram"><h3>Digram and Trigram Counts</h3></a>
+<pre>             Digrams in Cryptogram                  English Digrams
+
+            QA ...................... 5         th .................... 4
+            GP,JZ,OG,PQ ............. 4         he .................... 3
+            KO,FJ,CK,AG,UG .......... 3         an,in,er,re,es ........ 2
+            GC,GZ,GF,GL,GM,QF                    on,ea,ti,at,st
+            QQ,KU,KJ,FQ,JQ,JG                    en,nd,or,to,nt
+            LO,ZK,AF,EF,IG,SJ ....... 2          ed,is,ar,ou,te
+                                                 of,it,ha,se,et ....... 1
+
+            Trigrams in Cryptogram                English Trigrams
+                                               (in order of frequency)
+  
+             GPQ ........................ 4             the
+             QAG, FJZ ................... 3             and
+             QAF,JZK,OGP,KOG                            tha
+             CKU,AGL,UGZ,GFJ                            ent
+             GLO,KUG,KJG ................ 2             ion
+</pre>
+Return to<a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exsubcip.html#start"> start</a>
+<hr>
+<noframe>
+Return to <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/m5410.html">index</a> (non-frame version)
+<hr>
+</noframe>
+
+
+
+
+
+
+
+</body></html>
